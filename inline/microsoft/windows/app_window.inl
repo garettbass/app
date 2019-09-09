@@ -69,7 +69,7 @@ app_window_acquire(void) {
         wclex.lpfnWndProc   = (WNDPROC)_app_wndproc;
         wclex.cbClsExtra    = 0;
         wclex.cbWndExtra    = 0;
-        wclex.hInstance     = GetModuleHandleA(NULL);
+        wclex.hInstance     = (HINSTANCE)GetModuleHandleA(NULL);
         wclex.hIcon         = LoadIconA(NULL, (LPCSTR)IDI_APPLICATION);
         wclex.hCursor       = LoadCursorA(NULL, (LPCSTR)IDC_ARROW);
         wclex.hbrBackground = (HBRUSH)(CLR_WINDOW + 1);
@@ -106,7 +106,7 @@ app_window_acquire(void) {
         /* nHeight      */ desktop_h / 2,
         /* hWndParent   */ NULL,
         /* hMenu        */ NULL,
-        /* hInstance    */ GetModuleHandleA(NULL),
+        /* hInstance    */ (HINSTANCE)GetModuleHandleA(NULL),
         /* lpParam      */ 0
     );
 
@@ -179,7 +179,7 @@ void
 app_window_set_frame(app_window* const window, app_rect frame) {
     assert(window);
     HWND hwnd = (HWND)window;
-    WINDOWPLACEMENT wpl = {sizeof(WINDOWPLACEMENT),0};
+    WINDOWPLACEMENT wpl = {sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wpl);
     wpl.rcNormalPosition.left = (LONG)frame.x;
     wpl.rcNormalPosition.top = (LONG)frame.y;
@@ -210,7 +210,7 @@ app_window_set_viewport(app_window* const window, app_rect viewport) {
     HWND hwnd = (HWND)window;
     const DWORD style = (DWORD)GetWindowLongPtrA(hwnd, GWL_STYLE);
     const DWORD exstyle = (DWORD)GetWindowLongPtrA(hwnd, GWL_EXSTYLE);
-    WINDOWPLACEMENT wpl = {sizeof(WINDOWPLACEMENT),0};
+    WINDOWPLACEMENT wpl = {sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wpl);
     wpl.rcNormalPosition.left = (LONG)viewport.x;
     wpl.rcNormalPosition.top = (LONG)viewport.y;

@@ -874,7 +874,7 @@ typedef BOOL(__stdcall* MONITORENUMPROC)(HMONITOR,HDC,LPRECT,LPVOID);
 
 typedef struct WNDCLASSEXA {
     UINT      cbSize;
-    CS        style;
+    DWORD     style;
     WNDPROC   lpfnWndProc;
     int       cbClsExtra;
     int       cbWndExtra;
@@ -928,13 +928,13 @@ APP_EXTERN_C_BEGIN
 //------------------------------------------------------------------------------
 
 #pragma comment(lib, "user32.lib")
-BOOL     __stdcall AdjustWindowRectEx   (RECT*, WS, BOOL Menu, WS_EX);
+BOOL     __stdcall AdjustWindowRectEx   (RECT*, DWORD, BOOL Menu, DWORD);
 HDC      __stdcall BeginPaint           (HWND, PAINTSTRUCT*);
-HWND     __stdcall CreateWindowExA      (WS_EX, LPCSTR Class, LPCSTR Title,
-                                         WS, int X, int Y, int W, int H,
+HWND     __stdcall CreateWindowExA      (DWORD, LPCSTR Class, LPCSTR Title,
+                                         DWORD, int X, int Y, int W, int H,
                                          HWND Parent, HMENU, HINSTANCE, LPARAM);
 BOOL     __stdcall DestroyWindow        (HWND);
-LRESULT  __stdcall DefWindowProcA       (HWND, WM, WPARAM, LPARAM);
+LRESULT  __stdcall DefWindowProcA       (HWND, DWORD, WPARAM, LPARAM);
 LRESULT  __stdcall DispatchMessageA     (const MSG*);
 BOOL     __stdcall EndPaint             (HWND, const PAINTSTRUCT*);
 BOOL     __stdcall EnumDisplayMonitors  (HDC, LPCRECT Clip, MONITORENUMPROC, LPARAM);
@@ -960,7 +960,7 @@ HICON    __stdcall LoadIconA            (HINSTANCE, LPCSTR);
 int      __stdcall MapWindowPoints      (HWND from, HWND to, POINT*, UINT);
 HMONITOR __stdcall MonitorFromPoint     (POINT, MONITOR_DEFAULT);
 HMONITOR __stdcall MonitorFromRect      (const RECT*, MONITOR_DEFAULT);
-BOOL     __stdcall PeekMessageA         (MSG*, HWND, WM min, WM max, PM);
+BOOL     __stdcall PeekMessageA         (MSG*, HWND, DWORD min, DWORD max, DWORD);
 ATOM     __stdcall RegisterClassExA     (const WNDCLASSEXA*);
 LRESULT  __stdcall SendMessageA         (HWND, WM, WPARAM, LPARAM);
 HCURSOR  __stdcall SetCursor            (HCURSOR);
@@ -968,7 +968,7 @@ HWND     __stdcall SetActiveWindow      (HWND);
 BOOL     __stdcall SetForegroundWindow  (HWND);
 LONG_PTR __stdcall SetWindowLongPtrA    (HWND, GWL, LONG_PTR);
 BOOL     __stdcall SetWindowPlacement   (HWND, const WINDOWPLACEMENT*);
-BOOL     __stdcall SetWindowPos         (HWND, HWND, int, int, int, int, SWP);
+BOOL     __stdcall SetWindowPos         (HWND, HWND, int, int, int, int, UINT);
 BOOL     __stdcall SetWindowTextA       (HWND, LPCSTR);
 BOOL     __stdcall ShowWindow           (HWND, SW);
 BOOL     __stdcall TranslateMessage     (const MSG*);
