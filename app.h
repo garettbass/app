@@ -13,13 +13,12 @@
 
 //------------------------------------------------------------------------------
 
-#ifndef APP_DEBUG
-    #if defined(DEBUG) || defined(_DEBUG)
-        #define APP_DEBUG 1
-    #elif defined(__GNUC__) && !defined(__OPTIMIZE)
-        #define APP_DEBUG 1
-    #endif
-#endif
+#define APP_BUILD\
+        APP_VERSION" "\
+        APP_COMPILER_NAME" "\
+        APP_OS_NAME" "\
+        APP_CPU_NAME" ("APP_ENDIAN_NAME") "\
+        __DATE__" "__TIME__
 
 //------------------------------------------------------------------------------
 
@@ -28,31 +27,6 @@
 #else
     #define APP_DEBUG_ONLY(...)
 #endif
-
-//------------------------------------------------------------------------------
-
-#ifdef __cplusplus
-    #define APP_EXTERN_C       extern "C"
-    #define APP_EXTERN_C_BEGIN extern "C" {
-    #define APP_EXTERN_C_END   } // extern "C"
-#else
-    #define APP_EXTERN_C       /* extern "C" */
-    #define APP_EXTERN_C_BEGIN /* extern "C" { */
-    #define APP_EXTERN_C_END   /* } // extern "C" */
-#endif // __cplusplus
-
-//------------------------------------------------------------------------------
-
-typedef enum app_window_features {
-    APP_WINDOW_FEATURES_NONE     = 0,
-    APP_WINDOW_FEATURES_CLOSE    = 1 << 0,
-    APP_WINDOW_FEATURES_MINIMIZE = 1 << 1,
-    APP_WINDOW_FEATURES_RESIZE   = 1 << 2,
-    APP_WINDOW_FEATURES_TITLEBAR = 1 << 3,
-    APP_WINDOW_FEATURES_MENUBAR  = 1 << 4,
-} app_window_features;
-
-#define app_window_features(EXPR) ((app_window_features)(EXPR))
 
 //------------------------------------------------------------------------------
 

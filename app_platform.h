@@ -14,6 +14,28 @@
 #endif
 #endif
 
+//------------------------------------------------------------------------------
+
+#ifdef __cplusplus
+    #define APP_EXTERN_C       extern "C"
+    #define APP_EXTERN_C_BEGIN extern "C" {
+    #define APP_EXTERN_C_END   } // extern "C"
+#else
+    #define APP_EXTERN_C       /* extern "C" */
+    #define APP_EXTERN_C_BEGIN /* extern "C" { */
+    #define APP_EXTERN_C_END   /* } // extern "C" */
+#endif // __cplusplus
+
+//------------------------------------------------------------------------------
+
+#ifndef APP_DEBUG
+    #if defined(DEBUG) || defined(_DEBUG)
+        #define APP_DEBUG 1
+    #elif defined(__GNUC__) && !defined(__OPTIMIZE)
+        #define APP_DEBUG 1
+    #endif
+#endif
+
 //-----------------------------------------------------------------------------
 
 #define  APP_QUOTE(...) _APP_QUOTE(__VA_ARGS__)

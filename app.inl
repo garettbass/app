@@ -14,20 +14,14 @@
 
 //------------------------------------------------------------------------------
 
-APP_DEBUG_ONLY(
+#if APP_DEBUG
     APP_EXTERN_C_BEGIN
     app_static_initializer(app_version) {
         extern int puts(const char*);
-        puts(
-            APP_VERSION" "
-            APP_OS_NAME" "
-            APP_CPU_NAME" "
-            APP_ENDIAN_NAME" "
-            APP_COMPILER_NAME
-        );
+        puts(APP_BUILD);
     }
     APP_EXTERN_C_END
-)
+#endif
 
 //------------------------------------------------------------------------------
 

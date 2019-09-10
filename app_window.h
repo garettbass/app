@@ -3,6 +3,19 @@
 
 //------------------------------------------------------------------------------
 
+typedef enum app_window_features {
+    APP_WINDOW_FEATURES_NONE     = 0,
+    APP_WINDOW_FEATURES_CLOSE    = 1 << 0,
+    APP_WINDOW_FEATURES_MINIMIZE = 1 << 1,
+    APP_WINDOW_FEATURES_RESIZE   = 1 << 2,
+    APP_WINDOW_FEATURES_TITLEBAR = 1 << 3,
+    APP_WINDOW_FEATURES_MENUBAR  = 1 << 4,
+} app_window_features;
+
+#define app_window_features(EXPR) ((app_window_features)(EXPR))
+
+//------------------------------------------------------------------------------
+
 APP_EXTERN_C_BEGIN
 
 //------------------------------------------------------------------------------
