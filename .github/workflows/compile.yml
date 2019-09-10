@@ -13,9 +13,9 @@ jobs:
     steps:
     
     - name: checkout app-dev@master
-      uses: actions/checkout@master
+      uses: actions/checkout@v1
       with:
-        repository: https://github.com/garettbass/app-dev
+        repository: garettbass/app-dev@master
         fetch-depth: 1
         submodules: true
         
