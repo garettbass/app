@@ -5,7 +5,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, macOS-latest]
+        os: [macOS-latest, windows-latest]
     steps:
     - name: checkout app-dev@master
       uses: actions/checkout@v1
@@ -13,9 +13,7 @@ jobs:
         repository: garettbass/app-dev
         ref: master
         submodules: true
-    - name: goto app-dev
-      run: cd "$GITHUB_WORKSPACE"
-    - name: inspect cwd
-      run: echo $PWD && ls -la
-    - name: compile for C and C++
-      run: sh app.c -v && sh app.cpp -v
+    - name: compile for C
+      run: sh -c 'CC=gcc sh app.c -v'
+    - name: compile for C++
+      run: sh -c 'CC=gcc sh app.cpp -v'
