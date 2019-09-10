@@ -1,24 +1,17 @@
-name: CI
-
+name: compile app for C and C++
 on: [push]
-
 jobs:
   build:
-
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [windows-latest, macOS-latest]
-    
     steps:
-    
     - name: checkout app-dev@master
       uses: actions/checkout@v1
       with:
         repository: garettbass/app-dev
         ref: master
-        fetch-depth: 1
         submodules: true
-        
     - name: compile for C and C++
       run: sh app.c && sh app.cpp
