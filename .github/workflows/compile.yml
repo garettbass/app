@@ -13,5 +13,7 @@ jobs:
         repository: garettbass/app-dev
         ref: master
         submodules: true
+    - name: inspect cwd
+      run: echo $PWD && ls -la
     - name: compile for C and C++
       run: sh app.c && sh app.cpp
