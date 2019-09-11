@@ -1,4 +1,4 @@
-name: Compile for C and C++
+name: Run tests
 on: [push]
 jobs:
   build:

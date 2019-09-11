@@ -1,3 +1,3 @@
 #!/usr/bin/env
-sh compile_c.sh -v --clean
-sh compile_c++.sh -v --clean
+sh "$(dirname $0)/compile_c.sh" -v --clean && echo "OK"
+sh "$(dirname $0)/compile_c++.sh" -v --clean && echo "OK"
