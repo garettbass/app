@@ -1,4 +1,4 @@
-name: compile app for C and C++
+name: Compile for C and C++
 on: [push]
 jobs:
   build:
@@ -7,13 +7,6 @@ jobs:
       matrix:
         os: [macOS-latest, windows-latest]
     steps:
-    - name: checkout app-dev@master
-      uses: actions/checkout@v1
-      with:
-        repository: garettbass/app-dev
-        ref: master
-        submodules: true
-    - name: compile for C
-      run: sh -c 'CC=gcc sh app.c -v'
-    - name: compile for C++
-      run: sh -c 'CC=gcc sh app.cpp -v'
+    - uses: actions/checkout@v1
+    - name: Run tests
+      run: sh tests/all.sh

@@ -62,9 +62,10 @@ function usage {
     echo "  -std=<...>    Set C/C++ standard, e.g "
     echo "  -D<...>[=...] Define preprocessor macro, e.g.: -DNDEBUG=1"
     echo "  -O<...>       Set optimization level, e.g.: -O0, -O1, -O2, -O3, -Ofast, -Os"
+    echo "  -o <...>      Specify output path."
     echo "  -g            Generate debug symbols."
     echo "  -v            Enable verbose output."
-    echo "  -x <ext>      Specify source language, e.g.: -x c, -x cpp"
+    echo "  -x <ext>      Specify source language, e.g.: -x c, -x c++"
     echo "  --clean       Delete build artifacts."
     echo "  --            Run the compiled app, passing along remaining arguments."
     echo ""
@@ -85,6 +86,11 @@ while [ $# -gt 0 ]; do
         ;;
         -D*|-O*|-std=*)
             CFLAGS="$CFLAGS $1"
+            shift
+        ;;
+        -o)
+            APP_BIN="$2"
+            shift
             shift
         ;;
         -x)
@@ -146,14 +152,11 @@ case $(uname | tr '[:upper:]' '[:lower:]') in
     ;;
     darwin*)
         APP_HOST_OS=macos
-        BIN="$APP_ROOT/app.app/Contents/MacOS/app"
-        CLEANUP="rm -f $BIN; rm -rf $APP_ROOT/app.app/Contents/MacOS/app.dSYM"
     ;;
     msys*|mingw*)
         APP_HOST_OS=windows
         CFLAGS="${CFLAGS} -D_CRT_SECURE_NO_WARNINGS"
-        BIN="$APP_ROOT/$APP_NAME.exe"
-        CLEANUP="rm -f ${BIN}; rm -f ${BIN%.*}.ilk; rm -f ${BIN%.*}.pdb"
+        APP_EXT=".exe"
     ;;
     *)
         echo "unrecognized operating system"
@@ -161,9 +164,11 @@ case $(uname | tr '[:upper:]' '[:lower:]') in
     ;;
 esac
 
+APP_BIN="${APP_BIN:=$APP_ROOT/$APP_NAME$APP_EXT}"
+
 #-------------------------------------------------------------------------------
 
-COMPILE="$CC $CFLAGS ${SOURCES[@]} -o $BIN"
+COMPILE="$CC $CFLAGS ${SOURCES[@]} -o $APP_BIN"
 execute $COMPILE
 STATUS=$?
 if [ $STATUS -gt 0 ]; then exit $STATUS; fi
@@ -172,17 +177,17 @@ if [ $STATUS -gt 0 ]; then exit $STATUS; fi
 
 if [ $RUN ]; then
     echo $''
-    verbose "$BIN" "$@"
-    "$BIN" "$@"
+    verbose "$APP_BIN" "$@"
+    "$APP_BIN" "$@"
     STATUS=$?
     echo $''
-    echo "$BIN" returned "$STATUS"
+    echo "$APP_BIN" returned "$STATUS"
 fi
 
 if [ $CLEAN ]; then
-    rm -f  "${BIN}"
-    rm -f  "${BIN%.*}.ilk"
-    rm -f  "${BIN%.*}.pdb"
+    rm -f  "${APP_BIN}"
+    rm -f  "${APP_BIN%.*}.ilk"
+    rm -f  "${APP_BIN%.*}.pdb"
     rm -rf "${APP_ROOT}/app.app/Contents/MacOS/app.dSYM"
 fi
 
