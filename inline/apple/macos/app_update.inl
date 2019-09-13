@@ -130,8 +130,8 @@ _app_update_process_event(NSDate* const timeout) {
         case NSEventTypeOtherMouseUp:
         case NSEventTypeOtherMouseDown: {
             const NSInteger buttonNumber = _app_objc_obj(event,NSEvent,buttonNumber);
-            const app_key appKey = (app_key)(APP_KEY_Mouse1 + buttonNumber);
-            if (appKey >= APP_KEY_Mouse1 and appKey <= APP_KEY_Mouse10) {
+            const app_key appKey = (app_key)(APP_KEY_MOUSE_1 + buttonNumber);
+            if (appKey >= APP_KEY_MOUSE_1 and appKey <= APP_KEY_MOUSE_10) {
                 const bool isDown = eventType & 0x1;
                 _app_key_set(appKey, isDown);
             }

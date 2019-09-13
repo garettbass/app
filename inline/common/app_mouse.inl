@@ -26,12 +26,12 @@ _app_mouse_scroll_reset(void) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 app_point
-appMouseDelta(void) {
+app_mouse_delta(void) {
     return _app_mouse_delta;
 }
 
 app_point
-appMouseScroll(void) {
+app_mouse_scroll(void) {
     return _app_mouse_scroll;
 }
 

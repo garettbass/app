@@ -36,6 +36,14 @@
     #endif
 #endif
 
+//------------------------------------------------------------------------------
+
+#if APP_DEBUG
+    #define APP_DEBUG_ONLY(...) __VA_ARGS__
+#else
+    #define APP_DEBUG_ONLY(...)
+#endif
+
 //-----------------------------------------------------------------------------
 
 #define  APP_QUOTE(...) _APP_QUOTE(__VA_ARGS__)
