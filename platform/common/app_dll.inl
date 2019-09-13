@@ -1,5 +1,5 @@
 #pragma once
-#include "app.h"
+#include "../dll.h"
 #include <assert.h>
 #include <stdio.h>
 
@@ -36,7 +36,7 @@ app_dll_release(app_dll* dll) {
 }
 
 void*
-app_dll_find(app_dll* dll, const char* symbol) {
+app_dll_find_symbol(app_dll* dll, const char* symbol) {
     assert(dll);
     assert(symbol);
     assert(symbol[0]);

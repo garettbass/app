@@ -1,22 +1,31 @@
 #pragma once
-#include "app.h"
+#include "platform/platform.h"
 
 //------------------------------------------------------------------------------
 
-#include "inline/common/app.inl"
+#define APP_BUILD ""\
+        APP_VERSION " "\
+        APP_COMPILER_NAME " "\
+        APP_OS_NAME " "\
+        APP_CPU_NAME " (" APP_ENDIAN_NAME ") "\
+        __DATE__ " " __TIME__ ""
+
+//------------------------------------------------------------------------------
+
+#include "platform/common/app.inl"
 #if APP_OS_IOS
-#include "inline/apple/ios/app.inl"
+#include "platform/apple/ios/app.inl"
 #elif APP_OS_MACOS
-#include "inline/apple/macos/app.inl"
+#include "platform/apple/macos/app.inl"
 #elif APP_OS_WINDOWS
-#include "inline/microsoft/windows/app.inl"
+#include "platform/windows/app.inl"
 #endif
 
 //------------------------------------------------------------------------------
 
 #if APP_DEBUG
     APP_EXTERN_C_BEGIN
-    app_static_initializer(app_version) {
+    app_static_initializer(app_build) {
         extern int puts(const char*);
         puts(APP_BUILD);
     }

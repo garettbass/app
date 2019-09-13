@@ -1,10 +1,5 @@
 #pragma once
-#include <assert.h>
-#include <iso646.h>
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <stdio.h>
+#include "../app.h"
 
 //-----------------------------------------------------------------------------
 
@@ -13,18 +8,6 @@
 #define static_assert _Static_assert
 #endif
 #endif
-
-//------------------------------------------------------------------------------
-
-#ifdef __cplusplus
-    #define APP_EXTERN_C       extern "C"
-    #define APP_EXTERN_C_BEGIN extern "C" {
-    #define APP_EXTERN_C_END   } // extern "C"
-#else
-    #define APP_EXTERN_C       /* extern "C" */
-    #define APP_EXTERN_C_BEGIN /* extern "C" { */
-    #define APP_EXTERN_C_END   /* } // extern "C" */
-#endif // __cplusplus
 
 //------------------------------------------------------------------------------
 
@@ -535,3 +518,5 @@ _APP_PRINT_MACRO(const char* s) {
 
 #define APP_PRINT_MACRO(...) _APP_PRINT_MACRO(__VA_ARGS__)
 #define _APP_PRINT_MACRO(...) _APP_PRINT_MACRO(#__VA_ARGS__)
+
+//------------------------------------------------------------------------------

@@ -1,5 +1,10 @@
 #pragma once
-#include "app_platform.h"
+#include <assert.h>
+#include <iso646.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
 
 //------------------------------------------------------------------------------
 
@@ -7,18 +12,21 @@
 #define APP_VERSION_MINOR 0
 #define APP_VERSION_PATCH 0
 #define APP_VERSION\
-        APP_VERSION_(APP_VERSION_MAJOR,APP_VERSION_MINOR,APP_VERSION_PATCH)
-#define APP_VERSION_(X, Y, Z) APP_VERSION__(X, Y, Z)
-#define APP_VERSION__(X, Y, Z) "app "#X"."#Y"."#Z""
+        _APP_VERSION(APP_VERSION_MAJOR,APP_VERSION_MINOR,APP_VERSION_PATCH)
+#define _APP_VERSION(X, Y, Z) __APP_VERSION(X, Y, Z)
+#define __APP_VERSION(X, Y, Z) "app "#X"."#Y"."#Z""
 
 //------------------------------------------------------------------------------
 
-#define APP_BUILD ""\
-        APP_VERSION " "\
-        APP_COMPILER_NAME " "\
-        APP_OS_NAME " "\
-        APP_CPU_NAME " (" APP_ENDIAN_NAME ") "\
-        __DATE__ " " __TIME__ ""
+#ifdef __cplusplus
+    #define APP_EXTERN_C       extern "C"
+    #define APP_EXTERN_C_BEGIN extern "C" {
+    #define APP_EXTERN_C_END   } // extern "C"
+#else
+    #define APP_EXTERN_C       /* extern "C" */
+    #define APP_EXTERN_C_BEGIN /* extern "C" { */
+    #define APP_EXTERN_C_END   /* } // extern "C" */
+#endif // __cplusplus
 
 //------------------------------------------------------------------------------
 
@@ -310,9 +318,5 @@ app_window_set_fullscreen(app_window*, bool);
 //------------------------------------------------------------------------------
 
 APP_EXTERN_C_END
-
-//------------------------------------------------------------------------------
-
-#include "app_dll.h"
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,5 @@
 #pragma once
-#include "app.h"
-#include "app_platform.h"
+#include "platform.h"
 #include <assert.h>
 #include <stdio.h>
 
@@ -19,7 +18,7 @@ void
 app_dll_release(app_dll* dll);
 
 void*
-app_dll_find(app_dll* dll, const char* symbol);
+app_dll_find_symbol(app_dll* dll, const char* symbol);
 
 //------------------------------------------------------------------------------
 
@@ -113,7 +112,7 @@ APP_EXTERN_C_END
 
 #define _app_dllimport_initializer_function(RESULT, CALLTYPE, NAME, PARAMS) {\
             assert(NAME == NULL);\
-            NAME = (NAME##_t)app_dll_find(_dll, #NAME);\
+            NAME = (NAME##_t)app_dll_find_symbol(_dll, #NAME);\
             assert(NAME);\
             APP_DEBUG_ONLY(\
                 printf("    %s @ %p\n", #NAME, NAME);\
@@ -122,7 +121,7 @@ APP_EXTERN_C_END
 
 #define _app_dllimport_initializer_pointer(TYPE, NAME) {\
             assert(NAME == NULL);\
-            NAME = (TYPE)*(void**)app_dll_find(_dll, #NAME);\
+            NAME = (TYPE)*(void**)app_dll_find_symbol(_dll, #NAME);\
             assert(NAME);\
             APP_DEBUG_ONLY(\
                 printf("    %s %s @ %p\n", #TYPE, #NAME, NAME);\
