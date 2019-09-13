@@ -195,7 +195,7 @@ static char _app_key_nameBuffer[] = "(app_key)00000000000000000000000";
 
 const char*
 app_key_name(app_key key) {
-    if (key < app_keyCount)
+    if ((int)key < (int)app_keyCount)
         return _app_key_names[key];
 
     snprintf(
