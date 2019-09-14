@@ -115,7 +115,7 @@ _app_update_process_event(NSDate* const timeout) {
             NSString* const characters = _app_objc_obj(event,NSEvent,characters);
             if (characters) {
                 const char* const text = _app_objc_obj(characters,NSString,UTF8String);
-                _app_key_input_append_string(text);
+                _app_text_input_append_string(text);
             }
         } break;
 
@@ -185,7 +185,7 @@ static bool _app_quit_requested = false;
 
 bool
 app_update(void) {
-    _app_key_input_reset();
+    _app_text_input_reset();
     _app_mouse_delta_reset();
     _app_mouse_scroll_reset();
     _app_autoreleasepool_popPush();

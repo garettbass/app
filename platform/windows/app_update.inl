@@ -8,9 +8,9 @@ APP_EXTERN_C_BEGIN
 //------------------------------------------------------------------------------
 
 static inline void
-_app_log_event(const WM msg) {
+_app_log_event(unsigned const msg) {
     switch (msg) {
-        #define _app_log_event(WM) case WM: puts(#WM); break;
+        #define _app_log_event(WM) case _APP_##WM: puts(#WM); break;
         _app_log_event(WM_NONE)
         _app_log_event(WM_CREATE)
         _app_log_event(WM_DESTROY)
@@ -247,18 +247,27 @@ static bool _app_quit_requested = false;
 
 bool
 app_update(void) {
-    _app_key_input_reset();
+    _app_text_input_reset();
     _app_mouse_delta_reset();
     _app_mouse_scroll_reset();
-    MSG msg;
-    while (PeekMessageA(&msg, 0, 0, 0, PM_REMOVE)) {
+    struct {
+        void*    hwnd;
+        unsigned message;
+        size_t   wParam;
+        size_t   lParam;
+        unsigned time;
+        struct { int x, y; } pt;
+        unsigned lPrivate;
+    } msg;
+    enum { _APP_PM_REMOVE = 1 };
+    while (_app_PeekMessageA(&msg, 0, 0, 0, _APP_PM_REMOVE)) {
         // _app_log_event(msg.message);
-        if (msg.message == WM_QUIT) {
+        if (msg.message ==  _APP_WM_QUIT) {
             app_quit();
             break;
         }
-        TranslateMessage(&msg);
-        DispatchMessageA(&msg);
+        _app_TranslateMessage(&msg);
+        _app_DispatchMessageA(&msg);
     }
     _app_keys_update();
     return not _app_quit_requested;

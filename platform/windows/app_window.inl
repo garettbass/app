@@ -7,35 +7,50 @@ APP_EXTERN_C_BEGIN
 
 //------------------------------------------------------------------------------
 
-static LRESULT __stdcall
+static void* _app_hcursor[] = {
+    /* APP_CURSOR_NONE      */ NULL,
+    /* APP_CURSOR_DEFAULT   */ NULL,
+    /* APP_CURSOR_ARROW     */ NULL,
+    /* APP_CURSOR_CROSSHAIR */ NULL,
+    /* APP_CURSOR_TEXT      */ NULL,
+    /* APP_CURSOR_LINK      */ NULL,
+    /* APP_CURSOR_DRAG_NS   */ NULL,
+    /* APP_CURSOR_DRAG_EW   */ NULL,
+};
+
+static size_t __stdcall
 _app_wndproc(
-    HWND hwnd,
-    UINT msg,
-    WPARAM wParam,
-    LPARAM lParam)
-{
-    app_window* const window = (app_window*)hwnd;
+    app_window* const window,
+    unsigned    const msg,
+    size_t      const wParam,
+    size_t      const lParam
+) {
     switch (msg) {
-        case WM_CLOSE: {
-            ShowWindow(hwnd, SW_HIDE);
+        case _APP_WM_CLOSE: {
+            enum { _APP_SW_HIDE = 0 };
+            _app_ShowWindow(window, _APP_SW_HIDE);
             return 0;
         }
-        case WM_CHAR: {
-            const char c = wParam & 0xFF;
-            _app_key_input_append_char(c);
+        case _APP_WM_CHAR: {
+            uint16_t utf16[2] = { (uint16_t)(wParam & 0xFFFF) };
+            char utf8[8] = {0};
+            enum { _app_CP_UTF8 = 65001 };
+            _app_WideCharToMultiByte(_app_CP_UTF8, 0, utf16, 1, utf8, 7, NULL, NULL);
+            if (utf8[0] == '\r') utf8[0] = '\n';
+            _app_text_input_append_string(utf8);
             break;
         }
-        case WM_UNICHAR: {
+        case _APP_WM_UNICHAR: {
             const uint32_t u = wParam & 0xFFFFFFFF;
-            _app_key_input_append_utf32(u);
-            enum { UNICODE_NOCHAR = 65535};
-            return wParam == UNICODE_NOCHAR;
+            _app_text_input_append_utf32(u);
+            enum { _APP_UNICODE_NOCHAR = 65535};
+            return wParam == _APP_UNICODE_NOCHAR;
         }
-        case WM_SETCURSOR: {
+        case _APP_WM_SETCURSOR: {
             if (app_cursor_is_inside(app_window_get_viewport(window), NULL)) {
                 switch (_app_cursor) {
                     case APP_CURSOR_NONE:
-                        SetCursor(NULL);
+                        _app_SetCursor(NULL);
                         return true;
                     case APP_CURSOR_DEFAULT:
                     case APP_CURSOR_ARROW:
@@ -45,59 +60,101 @@ _app_wndproc(
                     case APP_CURSOR_LINK:
                     case APP_CURSOR_DRAG_NS:
                     case APP_CURSOR_DRAG_EW:
-                        SetCursor(_app_cursor_to_hcursor[_app_cursor]);
+                        _app_SetCursor(_app_hcursor[_app_cursor]);
                         return true;
                 }
             }
             break;
         }
     }
-    return DefWindowProcA(hwnd, msg, wParam, lParam);
+    return _app_DefWindowProcA(window, msg, wParam, lParam);
 }
 
 //------------------------------------------------------------------------------
 
 app_window*
 app_window_acquire(void) {
-    extern void* __stdcall GetModuleHandleA(const char*);
-    extern ATOM __stdcall RegisterClassExA(const WNDCLASSEXA*);
-    static ATOM wcl = 0;
-    if (not wcl) {
-        static WNDCLASSEXA wclex = {0};
-        wclex.cbSize        = sizeof(WNDCLASSEXA);
-        wclex.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-        wclex.lpfnWndProc   = (WNDPROC)_app_wndproc;
-        wclex.cbClsExtra    = 0;
-        wclex.cbWndExtra    = 0;
-        wclex.hInstance     = (HINSTANCE)GetModuleHandleA(NULL);
-        wclex.hIcon         = LoadIconA(NULL, (LPCSTR)IDI_APPLICATION);
-        wclex.hCursor       = LoadCursorA(NULL, (LPCSTR)IDC_ARROW);
-        wclex.hbrBackground = (HBRUSH)(CLR_WINDOW + 1);
-        wclex.lpszMenuName  = NULL;
-        wclex.lpszClassName = "app_window";
-        wcl = RegisterClassExA(&wclex);
+    void* const hInstance = _app_GetModuleHandleA(NULL);
+    static uint16_t wndClassAtom = 0;
+    if (not wndClassAtom) {
+        enum {
+            _APP_CS_VREDRAW      = 0x01,
+            _APP_CS_HREDRAW      = 0x02,
+            _APP_CS_OWNDC        = 0x20,
+            _APP_CLR_WINDOW      = 5,
+            _APP_IDI_APPLICATION = 32512,
+        };
+        static struct {
+            unsigned    cbSize;
+            unsigned    style;
+            void*       lpfnWndProc;
+            int         cbClsExtra;
+            int         cbWndExtra;
+            void*       hInstance;
+            void*       hIcon;
+            void*       hCursor;
+            void*       hbrBackground;
+            const char* lpszMenuName;
+            const char* lpszClassName;
+            void*       hIconSm;
+        } wndClassExA = {0};
+        wndClassExA.cbSize        = sizeof(wndClassExA);
+        wndClassExA.style         = _APP_CS_HREDRAW | _APP_CS_VREDRAW | _APP_CS_OWNDC;
+        wndClassExA.lpfnWndProc   = (void*)_app_wndproc;
+        wndClassExA.cbClsExtra    = 0;
+        wndClassExA.cbWndExtra    = 0;
+        wndClassExA.hInstance     = hInstance;
+        wndClassExA.hIcon         = _app_LoadIconA(NULL, (const char*)(size_t)_APP_IDI_APPLICATION);
+        wndClassExA.hCursor       = _app_hcursor[APP_CURSOR_ARROW];
+        wndClassExA.hbrBackground = (void*)(size_t)(_APP_CLR_WINDOW + 1);
+        wndClassExA.lpszMenuName  = NULL;
+        wndClassExA.lpszClassName = "app_window";
+        wndClassAtom = _app_RegisterClassExA(&wndClassExA);
     }
 
-    const DWORD style =
-        WS_OVERLAPPEDWINDOW |
-        WS_CLIPSIBLINGS |
-        WS_CLIPCHILDREN |
-        WS_SIZEBOX;
+    enum {
+        _APP_WS_CAPTION      = 0x00C00000L,
+        _APP_WS_CLIPCHILDREN = 0x02000000L,
+        _APP_WS_CLIPSIBLINGS = 0x04000000L,
+        _APP_WS_MAXIMIZEBOX  = 0x00010000L,
+        _APP_WS_MINIMIZEBOX  = 0x00020000L,
+        _APP_WS_SIZEBOX      = 0x00040000L,
+        _APP_WS_SYSMENU      = 0x00080000L,
+        _APP_WS_THICKFRAME   = 0x00040000L,
 
-    const DWORD exstyle =
-        WS_EX_app_window; // show in taskbar
+    };
+    const unsigned style =
+        _APP_WS_CAPTION |
+        _APP_WS_CLIPSIBLINGS |
+        _APP_WS_CLIPCHILDREN |
+        _APP_WS_MAXIMIZEBOX |
+        _APP_WS_MINIMIZEBOX |
+        _APP_WS_SIZEBOX |
+        _APP_WS_SYSMENU |
+        _APP_WS_THICKFRAME;
 
-    const POINT origin = {0};
-    HMONITOR hmon = MonitorFromPoint(origin, MONITOR_DEFAULTTOPRIMARY);
-    MONITORINFO mi = {sizeof(MONITORINFO),0}; GetMonitorInfoA(hmon, &mi);
+    enum { _APP_WS_EX_APPWINDOW = 0x00040000L };
+    const unsigned exstyle = _APP_WS_EX_APPWINDOW; // show in taskbar
 
-    const RECT desktop = mi.rcWork;
-    int desktop_w = desktop.right - desktop.left;
-    int desktop_h = desktop.bottom - desktop.top;
+    typedef struct RECT { int left, top, right, bottom; } RECT;
+    const RECT origin = {0};
+    enum { _APP_MONITOR_DEFAULTTOPRIMARY = 1 };
+    void* const hmon = _app_MonitorFromRect(&origin, _APP_MONITOR_DEFAULTTOPRIMARY);
+    struct {
+        unsigned cbSize;
+        RECT     rcMonitor;
+        RECT     rcWork;
+        unsigned dwFlags;
+    } mi = {sizeof(mi)};
+    _app_GetMonitorInfoA(hmon, &mi);
 
-    const HWND hwnd = CreateWindowExA(
+    const RECT desktop   = mi.rcWork;
+    const int  desktop_w = desktop.right - desktop.left;
+    const int  desktop_h = desktop.bottom - desktop.top;
+
+    void* const hWnd = _app_CreateWindowExA(
         /* dwExStyle    */ exstyle,
-        /* lpClassName  */ (LPCSTR)(size_t)wcl,
+        /* lpClassName  */ (const char*)(size_t)wndClassAtom,
         /* lpWindowName */ NULL,
         /* dwStyle      */ style,
         /* X            */ desktop_w / 4,
@@ -106,18 +163,17 @@ app_window_acquire(void) {
         /* nHeight      */ desktop_h / 2,
         /* hWndParent   */ NULL,
         /* hMenu        */ NULL,
-        /* hInstance    */ (HINSTANCE)GetModuleHandleA(NULL),
+        /* hInstance    */ hInstance,
         /* lpParam      */ 0
     );
 
-    return (app_window*)hwnd;
+    return (app_window*)hWnd;
 }
 
 void
 app_window_release(app_window* const window) {
     assert(window);
-    HWND hwnd = (HWND)window;
-    DestroyWindow(hwnd);
+    _app_DestroyWindow(window);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -125,8 +181,7 @@ app_window_release(app_window* const window) {
 void
 app_window_set_title(app_window* const window, const char* const title) {
     assert(window);
-    HWND hwnd = (HWND)window;
-    SetWindowTextA(hwnd, title);
+    _app_SetWindowTextA(window, title);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -137,26 +192,40 @@ app_window_set_features(
     const app_window_features features
 ) {
     assert(window);
-    HWND hwnd = (HWND)window;
-    DWORD style = 0;
+    unsigned style = 0;
 
+    enum {
+        _APP_WS_CAPTION          = 0x00C00000L,
+        _APP_WS_MAXIMIZEBOX      = 0x00010000L,
+        _APP_WS_MINIMIZEBOX      = 0x00020000L,
+        _APP_WS_SYSMENU          = 0x00080000L,
+        _APP_WS_THICKFRAME       = 0x00040000L,
+    };
     if (features & APP_WINDOW_FEATURES_CLOSE)
-        style |= WS_CAPTION | WS_SYSMENU;
+        style |= _APP_WS_CAPTION | _APP_WS_SYSMENU;
     if (features & APP_WINDOW_FEATURES_MINIMIZE)
-        style |= WS_CAPTION | WS_MINIMIZEBOX;
+        style |= _APP_WS_CAPTION | _APP_WS_MINIMIZEBOX;
     if (features & APP_WINDOW_FEATURES_RESIZE)
-        style |= WS_THICKFRAME | WS_MAXIMIZEBOX;
+        style |= _APP_WS_THICKFRAME | _APP_WS_MAXIMIZEBOX;
     if (features & APP_WINDOW_FEATURES_TITLEBAR)
-        style |= WS_CAPTION;
+        style |= _APP_WS_CAPTION;
 
-    SetWindowLongPtrA(hwnd, GWL_STYLE, (LONG_PTR)style);
-    UINT flags =
-        SWP_NOMOVE |
-        SWP_NOSIZE |
-        SWP_NOZORDER |
-        SWP_NOREPOSITION |
-        SWP_FRAMECHANGED;
-    SetWindowPos(hwnd, 0, 0, 0, 0, 0, flags);
+    enum { _APP_GWL_STYLE = -16 };
+    _app_SetWindowLongPtrA(window, _APP_GWL_STYLE, style);
+    enum {
+        _APP_SWP_NOMOVE         = 0x0002,
+        _APP_SWP_NOSIZE         = 0x0001,
+        _APP_SWP_NOZORDER       = 0x0004,
+        _APP_SWP_FRAMECHANGED   = 0x0020,
+        _APP_SWP_NOREPOSITION   = 0x0200,
+    };
+    const unsigned flags =
+        _APP_SWP_NOMOVE |
+        _APP_SWP_NOSIZE |
+        _APP_SWP_NOZORDER |
+        _APP_SWP_FRAMECHANGED |
+        _APP_SWP_NOREPOSITION;
+    _app_SetWindowPos(window, 0, 0, 0, 0, 0, flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -164,9 +233,8 @@ app_window_set_features(
 app_rect
 app_window_get_frame(app_window* const window) {
     assert(window);
-    HWND hwnd = (HWND)window;
-    RECT rc;
-    GetWindowRect(hwnd, &rc);
+    struct { int left, top, right, bottom; } rc;
+    _app_GetWindowRect(window, &rc);
     app_rect frame;
     frame.x = rc.left;
     frame.y = rc.top;
@@ -178,14 +246,22 @@ app_window_get_frame(app_window* const window) {
 void
 app_window_set_frame(app_window* const window, app_rect frame) {
     assert(window);
-    HWND hwnd = (HWND)window;
-    WINDOWPLACEMENT wpl = {sizeof(WINDOWPLACEMENT)};
-    GetWindowPlacement(hwnd, &wpl);
-    wpl.rcNormalPosition.left = (LONG)frame.x;
-    wpl.rcNormalPosition.top = (LONG)frame.y;
-    wpl.rcNormalPosition.right = (LONG)(frame.x + frame.w);
-    wpl.rcNormalPosition.bottom = (LONG)(frame.y + frame.h);
-    SetWindowPlacement(hwnd, &wpl);
+    typedef struct POINT { int x, y; } POINT;
+    typedef struct RECT { int left, top, right, bottom; } RECT;
+    struct {
+        unsigned cbSize;
+        unsigned flags;
+        unsigned showCmd;
+        POINT    rcMinPosition;
+        POINT    rcMaxPosition;
+        RECT     rcNormalPosition;
+    } wpl = {sizeof(wpl)};
+    _app_GetWindowPlacement(window, &wpl);
+    wpl.rcNormalPosition.left = (int)frame.x;
+    wpl.rcNormalPosition.top = (int)frame.y;
+    wpl.rcNormalPosition.right = (int)(frame.x + frame.w);
+    wpl.rcNormalPosition.bottom = (int)(frame.y + frame.h);
+    _app_SetWindowPlacement(window, &wpl);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -193,9 +269,8 @@ app_window_set_frame(app_window* const window, app_rect frame) {
 app_rect
 app_window_get_viewport(app_window* const window) {
     assert(window);
-    HWND hwnd = (HWND)window;
-    RECT rc;
-    GetClientRect(hwnd, &rc);
+    struct { int left, top, right, bottom; } rc;
+    _app_GetClientRect(window, &rc);
     app_rect viewport;
     viewport.x = rc.left;
     viewport.y = rc.top;
@@ -207,42 +282,49 @@ app_window_get_viewport(app_window* const window) {
 void
 app_window_set_viewport(app_window* const window, app_rect viewport) {
     assert(window);
-    HWND hwnd = (HWND)window;
-    const DWORD style = (DWORD)GetWindowLongPtrA(hwnd, GWL_STYLE);
-    const DWORD exstyle = (DWORD)GetWindowLongPtrA(hwnd, GWL_EXSTYLE);
-    WINDOWPLACEMENT wpl = {sizeof(WINDOWPLACEMENT)};
-    GetWindowPlacement(hwnd, &wpl);
-    wpl.rcNormalPosition.left = (LONG)viewport.x;
-    wpl.rcNormalPosition.top = (LONG)viewport.y;
-    wpl.rcNormalPosition.right = (LONG)(viewport.x + viewport.w);
-    wpl.rcNormalPosition.bottom = (LONG)(viewport.y + viewport.h);
-    AdjustWindowRectEx(&wpl.rcNormalPosition, style, false, exstyle);
-    SetWindowPlacement(hwnd, &wpl);
+    enum { _APP_GWL_STYLE = -16, _APP_GWL_EXSTYLE = -20 };
+    const unsigned style = (unsigned)_app_GetWindowLongPtrA(window, _APP_GWL_STYLE);
+    const unsigned exstyle = (unsigned)_app_GetWindowLongPtrA(window, _APP_GWL_EXSTYLE);
+    typedef struct POINT { int x, y; } POINT;
+    typedef struct RECT { int left, top, right, bottom; } RECT;
+    struct {
+        unsigned cbSize;
+        unsigned flags;
+        unsigned showCmd;
+        POINT    rcMinPosition;
+        POINT    rcMaxPosition;
+        RECT     rcNormalPosition;
+    } wpl = {sizeof(wpl)};
+    _app_GetWindowPlacement(window, &wpl);
+    wpl.rcNormalPosition.left = (int)viewport.x;
+    wpl.rcNormalPosition.top = (int)viewport.y;
+    wpl.rcNormalPosition.right = (int)(viewport.x + viewport.w);
+    wpl.rcNormalPosition.bottom = (int)(viewport.y + viewport.h);
+    _app_AdjustWindowRectEx(&wpl.rcNormalPosition, style, false, exstyle);
+    _app_SetWindowPlacement(window, &wpl);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 bool
 app_window_is_active(app_window* window) {
-    assert(window);
-    HWND hwnd = (HWND)window;
-    return hwnd == GetActiveWindow();
+    return _app_GetActiveWindow() == window;
 }
 
 app_window*
 app_window_get_active(void) {
-    return (app_window*)GetActiveWindow();
+    return (app_window*)_app_GetActiveWindow();
 }
 
 void
 app_window_activate(app_window* window) {
     assert(window);
-    HWND hwnd = (HWND)window;
-    if (!IsWindowVisible(hwnd)) {
-        ShowWindow(hwnd, SW_SHOWNOACTIVATE);
+    if (!_app_IsWindowVisible(window)) {
+        enum { _APP_SW_SHOWNOACTIVATE = 4 };
+        _app_ShowWindow(window, _APP_SW_SHOWNOACTIVATE);
     }
-    SetActiveWindow(hwnd);
-    SetForegroundWindow(hwnd);
+    _app_SetActiveWindow(window);
+    _app_SetForegroundWindow(window);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -250,8 +332,7 @@ app_window_activate(app_window* window) {
 bool
 app_window_is_open(app_window* const window) {
     assert(window);
-    HWND hwnd = (HWND)window;
-    return IsWindowVisible(hwnd);
+    return _app_IsWindowVisible(window);
 }
 
 void
@@ -260,9 +341,9 @@ app_window_set_open(
     const bool open
 ) {
     assert(window);
-    HWND hwnd = (HWND)window;
-    if (open != app_window_is_open(window)) {
-        ShowWindow(hwnd, open ? SW_SHOW : SW_HIDE);
+    if (app_window_is_open(window) != open) {
+        enum { _APP_SW_HIDE = 0, _APP_SW_SHOW = 5 };
+        _app_ShowWindow(window, open ? _APP_SW_SHOW : _APP_SW_HIDE);
     }
 }
 

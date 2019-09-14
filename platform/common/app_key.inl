@@ -35,7 +35,6 @@ _app_key_set(app_key key, bool down) {
         : (oldBlock & ~bitMask);
     _app_key_blocks[blockIndex] = newBlock;
     if (oldBlock != newBlock) {
-        extern int printf(const char*, ...);
         // printf("%s: %s\n", app.key.toString(key), down ? "down" : "up");
     }
 }
@@ -233,46 +232,46 @@ app_static_initializer(_app_key_string_test) {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-static struct _app_key_input {
+static struct _app_text_input {
     uint8_t length;
     char    begin[62];
     char    end[1];
-} _app_key_input = {0};
-static_assert(sizeof(_app_key_input) == 64, "?");
+} _app_text_input = {0};
+static_assert(sizeof(_app_text_input) == 64, "?");
 
 static inline void
-_app_key_input_reset(void) {
-    _app_key_input = (struct _app_key_input){0};
-    assert(_app_key_input.length   == 0);
-    assert(_app_key_input.begin[0] == 0);
-    assert(_app_key_input.end[0]   == 0);
+_app_text_input_reset(void) {
+    _app_text_input = (struct _app_text_input){0};
+    assert(_app_text_input.length   == 0);
+    assert(_app_text_input.begin[0] == 0);
+    assert(_app_text_input.end[0]   == 0);
 }
 
 static inline void
-_app_key_input_append_char(const char in) {
-    printf("%s('%c')\n", __func__, in);
-    char* out = _app_key_input.begin + _app_key_input.length;
-    const char* const end = _app_key_input.end;
+_app_text_input_append_char(const char in) {
+    // printf("%s('%c')\n", __func__, in);
+    char* out = _app_text_input.begin + _app_text_input.length;
+    const char* const end = _app_text_input.end;
     if (in and out < end) {
         *out = in;
-        ++out, ++_app_key_input.length;
+        ++out, ++_app_text_input.length;
     }
     assert(*out == '\0');
 }
 
 static inline void
-_app_key_input_append_string(const char* in) {
-    printf("%s(\"%s\")\n", __func__, in);
-    char* out = _app_key_input.begin + _app_key_input.length;
-    const char* const end = _app_key_input.end;
-    for (; *in and out < end; ++in, ++out, ++_app_key_input.length) {
+_app_text_input_append_string(const char* in) {
+    // printf("%s(\"%s\")\n", __func__, in);
+    char* out = _app_text_input.begin + _app_text_input.length;
+    const char* const end = _app_text_input.end;
+    for (; *in and out < end; ++in, ++out, ++_app_text_input.length) {
         *out = *in;
     }
     assert(*out == '\0');
 }
 
 static inline void
-_app_key_input_append_utf32(const uint32_t u) {
+_app_text_input_append_utf32(const uint32_t u) {
     const uint32_t u_is_valid =
         ((u < 0x110000) &
         ((u < 0x00D800) | (u > 0x00DFFF)));
@@ -296,13 +295,13 @@ _app_key_input_append_utf32(const uint32_t u) {
         const char d =
             (is_length_4 * (0x80 + (0x3F & (u))));
         char utf8[8] = {a, b, c, d, 0};
-        _app_key_input_append_string(utf8);
+        _app_text_input_append_string(utf8);
     }
 }
 
 const char*
-app_key_input(void) {
-    return _app_key_input.begin;
+app_text_input(void) {
+    return _app_text_input.begin;
 }
 
 //------------------------------------------------------------------------------

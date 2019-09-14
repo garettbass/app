@@ -27,13 +27,15 @@ APP_EXTERN_C_END
 //------------------------------------------------------------------------------
 
 #define app_dll(DLL, PATH)\
-        static app_dll* DLL = NULL;\
         APP_EXTERN_C_BEGIN\
-        app_static_initializer(_app_dll_initializer_##DLL) {\
-            assert(DLL == NULL);\
-            DLL = app_dll_acquire(PATH);\
-            assert(DLL != NULL);\
-            APP_DEBUG_ONLY(printf("%s @ %p\n", PATH, (void*)DLL));\
+        app_dll* DLL(void) {\
+            static app_dll* _##DLL = NULL;\
+            if (_##DLL == NULL) {\
+                _##DLL = app_dll_acquire(PATH);\
+                APP_DEBUG_ONLY(printf("%s @ %p\n", PATH, (void*)_##DLL));\
+                assert(_##DLL != NULL);\
+            }\
+            return _##DLL;\
         }\
         APP_EXTERN_C_END
 
@@ -48,8 +50,7 @@ APP_EXTERN_C_END
 #define __app_dllimport(COUNTER, DLL, /*SYMBOLS*/...)\
         _app_dllimport_declarations(__VA_ARGS__)\
         app_static_initializer(_app_dllimport_initializer_##DLL##_##COUNTER) {\
-            assert(DLL);\
-            app_dll* const _dll = DLL;\
+            app_dll* const _dll = DLL();\
             _app_dllimport_initializers(__VA_ARGS__)\
         }
 
@@ -79,8 +80,27 @@ APP_EXTERN_C_END
         _app_dllimport_declaration_function(RESULT, __vectorcall, NAME, PARAMS)
 
 #define _app_dllimport_declaration_function(RESULT, CALLTYPE, NAME, PARAMS)\
-        typedef RESULT (*NAME##_t)PARAMS;\
+        typedef RESULT (CALLTYPE * NAME##_t)PARAMS;\
         static NAME##_t NAME = NULL;
+
+#define _app_dllimport_declaration_cdecl_alias(RESULT, ALIAS, NAME, PARAMS)\
+        _app_dllimport_declaration_function_alias(RESULT, __cdecl, ALIAS, NAME, PARAMS)
+
+#define _app_dllimport_declaration_fastcall_alias(RESULT, ALIAS, NAME, PARAMS)\
+        _app_dllimport_declaration_function_alias(RESULT, __fastcall, ALIAS, NAME, PARAMS)
+
+#define _app_dllimport_declaration_stdcall_alias(RESULT, ALIAS, NAME, PARAMS)\
+        _app_dllimport_declaration_function_alias(RESULT, __stdcall, ALIAS, NAME, PARAMS)
+
+#define _app_dllimport_declaration_thiscall_alias(RESULT, ALIAS, NAME, PARAMS)\
+        _app_dllimport_declaration_function_alias(RESULT, __thiscall, ALIAS, NAME, PARAMS)
+
+#define _app_dllimport_declaration_vectorcall_alias(RESULT, ALIAS, NAME, PARAMS)\
+        _app_dllimport_declaration_function_alias(RESULT, __vectorcall, ALIAS, NAME, PARAMS)
+
+#define _app_dllimport_declaration_function_alias(RESULT, CALLTYPE, ALIAS, NAME, PARAMS)\
+        typedef RESULT (CALLTYPE * ALIAS##_t)PARAMS;\
+        static ALIAS##_t ALIAS = NULL;
 
 #define _app_dllimport_declaration_pointer(TYPE, NAME)\
         static TYPE NAME = NULL;
@@ -110,22 +130,37 @@ APP_EXTERN_C_END
 #define _app_dllimport_initializer_vectorcall(RESULT, NAME, PARAMS)\
         _app_dllimport_initializer_function(RESULT, __vectorcall, NAME, PARAMS)
 
-#define _app_dllimport_initializer_function(RESULT, CALLTYPE, NAME, PARAMS) {\
-            assert(NAME == NULL);\
-            NAME = (NAME##_t)app_dll_find_symbol(_dll, #NAME);\
-            assert(NAME);\
-            APP_DEBUG_ONLY(\
-                printf("    %s @ %p\n", #NAME, NAME);\
-            )\
-        }
+#define _app_dllimport_initializer_function(RESULT, CALLTYPE, NAME, PARAMS)\
+        assert(NAME == NULL);\
+        NAME = (NAME##_t)app_dll_find_symbol(_dll, #NAME);\
+        APP_DEBUG_ONLY(printf("    %s @ %p\n", #NAME, NAME));\
+        assert(NAME);\
 
-#define _app_dllimport_initializer_pointer(TYPE, NAME) {\
-            assert(NAME == NULL);\
-            NAME = (TYPE)*(void**)app_dll_find_symbol(_dll, #NAME);\
-            assert(NAME);\
-            APP_DEBUG_ONLY(\
-                printf("    %s %s @ %p\n", #TYPE, #NAME, NAME);\
-            )\
-        }
+#define _app_dllimport_initializer_cdecl_alias(RESULT, ALIAS, NAME, PARAMS)\
+        _app_dllimport_initializer_function_alias(RESULT, __cdecl, ALIAS, NAME, PARAMS)
+
+#define _app_dllimport_initializer_fastcall_alias(RESULT, ALIAS, NAME, PARAMS)\
+        _app_dllimport_initializer_function_alias(RESULT, __fastcall, ALIAS, NAME, PARAMS)
+
+#define _app_dllimport_initializer_stdcall_alias(RESULT, ALIAS, NAME, PARAMS)\
+        _app_dllimport_initializer_function_alias(RESULT, __stdcall, ALIAS, NAME, PARAMS)
+
+#define _app_dllimport_initializer_thiscall_alias(RESULT, ALIAS, NAME, PARAMS)\
+        _app_dllimport_initializer_function_alias(RESULT, __thiscall, ALIAS, NAME, PARAMS)
+
+#define _app_dllimport_initializer_vectorcall_alias(RESULT, ALIAS, NAME, PARAMS)\
+        _app_dllimport_initializer_function_alias(RESULT, __vectorcall, ALIAS, NAME, PARAMS)
+
+#define _app_dllimport_initializer_function_alias(RESULT, CALLTYPE, ALIAS, NAME, PARAMS)\
+        assert(ALIAS == NULL);\
+        ALIAS = (ALIAS##_t)app_dll_find_symbol(_dll, #NAME);\
+        APP_DEBUG_ONLY(printf("    %s @ %p\n", #ALIAS, ALIAS));\
+        assert(ALIAS);\
+
+#define _app_dllimport_initializer_pointer(TYPE, NAME)\
+        assert(NAME == NULL);\
+        NAME = (TYPE)*(void**)app_dll_find_symbol(_dll, #NAME);\
+        APP_DEBUG_ONLY(printf("    %s %s @ %p\n", #TYPE, #NAME, NAME));\
+        assert(NAME);\
 
 //------------------------------------------------------------------------------

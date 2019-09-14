@@ -62,19 +62,19 @@
     #define APP_COMPILER_NAME  "msvc " APP_QUOTE(_MSC_FULL_VER)
     #define APP_COMPILER_MSVC  (_MSC_VER)
 
-    #pragma section(".CRT$XCU",read)
-
     #ifdef _WIN64
         #define app_static_initializer(NAME)\
+            __pragma(section("app_static_initializer$"#NAME, read))\
             static void NAME(void);\
-            __pragma(allocate(".CRT$XCU"))\
+            __pragma(allocate("app_static_initializer$"#NAME))\
             void (*NAME##_)(void) = NAME;\
             __pragma(comment(linker,"/include:" #NAME "_"))\
             static void NAME(void)
     #else
         #define app_static_initializer(NAME)\
+            __pragma(section("app_static_initializer$"#NAME, read))\
             static void NAME(void);\
-            __pragma(allocate(".CRT$XCU"))\
+            __pragma(allocate("app_static_initializer$"#NAME))\
             void (*NAME##_)(void) = NAME;\
             __pragma(comment(linker,"/include:_" #NAME "_"))\
             static void NAME(void)

@@ -237,9 +237,6 @@ typedef enum app_key {
     APP_KEY_LAST = APP_KEY_PAD_EQUAL,
 } app_key;
 
-const char*
-app_key_input(void);
-
 bool
 app_key_is_down(app_key);
 
@@ -256,6 +253,11 @@ app_mouse_delta(void);
 
 app_point
 app_mouse_scroll(void);
+
+//------------------------------------------------------------------------------
+
+const char*
+app_text_input(void);
 
 //------------------------------------------------------------------------------
 
