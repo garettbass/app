@@ -3,7 +3,7 @@
 #pragma comment(lib, "kernel32.lib")
 #pragma comment(lib, "user32.lib")
 #pragma comment(lib, "gdi32.lib")
-#include "app.h"
+#include "../common/app.inl"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

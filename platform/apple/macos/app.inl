@@ -1,5 +1,5 @@
 #pragma once
-#include "app.h"
+#include "../../common/app.inl"
 #include "../objc/appkit.h"
 #include "../objc/carbon.h"
 #include "../objc/coregraphics.h"
