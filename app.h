@@ -1,10 +1,6 @@
 #pragma once
-#include <assert.h>
-#include <iso646.h>
 #include <stdbool.h>
-#include <stddef.h>
 #include <stdint.h>
-#include <stdio.h>
 
 //------------------------------------------------------------------------------
 
@@ -19,11 +15,9 @@
 //------------------------------------------------------------------------------
 
 #ifdef __cplusplus
-    #define APP_EXTERN_C       extern "C"
     #define APP_EXTERN_C_BEGIN extern "C" {
     #define APP_EXTERN_C_END   } // extern "C"
 #else
-    #define APP_EXTERN_C       /* extern "C" */
     #define APP_EXTERN_C_BEGIN /* extern "C" { */
     #define APP_EXTERN_C_END   /* } // extern "C" */
 #endif // __cplusplus

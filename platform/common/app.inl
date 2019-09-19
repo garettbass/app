@@ -1,4 +1,5 @@
 #pragma once
+#include <iso646.h>
 #include "../../app.h"
 #include "app_cursor.inl"
 #include "app_dll.inl"

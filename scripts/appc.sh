@@ -48,7 +48,7 @@ fi
 
 #-------------------------------------------------------------------------------
 
-CFLAGS="${CFLAGS:=-Werror}"
+# CFLAGS="${CFLAGS:=-Werror}"
 
 #-------------------------------------------------------------------------------
 
@@ -84,7 +84,7 @@ while [ $# -gt 0 ]; do
             CFLAGS="$CFLAGS $1 -D_DEBUG=1"
             shift
         ;;
-        -D*|-O*|-std=*)
+        -D*|-O*|-std=*|-W*)
             CFLAGS="$CFLAGS $1"
             shift
         ;;
@@ -188,7 +188,7 @@ if [ $CLEAN ]; then
     rm -f  "${APP_BIN}"
     rm -f  "${APP_BIN%.*}.ilk"
     rm -f  "${APP_BIN%.*}.pdb"
-    rm -rf "${APP_ROOT}/app.app/Contents/MacOS/app.dSYM"
+    rm -rf "${APP_BIN%.*}.dSYM"
 fi
 
 #-------------------------------------------------------------------------------
