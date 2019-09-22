@@ -6,7 +6,8 @@ CMDLINE="$0 $@"
 
 function verbose {
     if [ $VERBOSE ]; then
-        echo "$@\n"
+        echo "$@"
+        echo ""
     fi
 }
 
@@ -33,34 +34,6 @@ function realpath {
         echo "$(cd "$(dirname "$path")"; pwd)/$(basename "$path")"
     fi
 }
-
-#-------------------------------------------------------------------------------
-
-function makedir {
-    if [[ ! -e "$1" ]]; then
-        mkdir -p "$1"
-    fi
-}
-
-function copydir {
-    execute "cp -R $1 $2"
-}
-
-#-------------------------------------------------------------------------------
-
-if [ -z "$CC" ]; then
-    CC="$(which cc)"
-    if [ ! -f "$CC" ]; then
-        CC="$(which gcc)"
-        if [ ! -f "$CC" ]; then
-            CC="$(which clang)"
-        fi
-    fi
-fi
-
-#-------------------------------------------------------------------------------
-
-# CFLAGS="${CFLAGS:=-Werror}"
 
 #-------------------------------------------------------------------------------
 
@@ -143,7 +116,7 @@ fi
 
 #-------------------------------------------------------------------------------
 
-verbose "\n$CMDLINE"
+verbose "$CMDLINE"
 
 #-------------------------------------------------------------------------------
 
@@ -180,6 +153,10 @@ case $(uname | tr '[:upper:]' '[:lower:]') in
 esac
 
 #-------------------------------------------------------------------------------
+
+if [ -z "$CC" ]; then
+    CC="$(which cc)" || "$(which gcc)" || "$(which clang)"
+fi
 
 execute "$CC" $CFLAGS ${SOURCES[@]} -o "$APP_BIN"
 STATUS=$?
