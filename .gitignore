@@ -1,5 +1,9 @@
 # https://gist.github.com/octocat/9257657
 
+# Build directory #
+###################
+build/
+
 # Compiled source #
 ###################
 *.com

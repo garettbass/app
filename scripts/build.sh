@@ -119,7 +119,6 @@ while [ $# -gt 0 ]; do
         ;;
         --)
             RUN=YES
-            CLEAN=YES
             shift
             break
         ;;
@@ -198,10 +197,7 @@ if [ $RUN ]; then
 fi
 
 if [ $CLEAN ]; then
-    rm -f  "${APP_BIN}"
-    rm -f  "${APP_BIN%.*}.ilk"
-    rm -f  "${APP_BIN%.*}.pdb"
-    rm -rf "${APP_BIN%.*}.dSYM"
+    rm -rf  "$APP_BUILD_ROOT"
 fi
 
 #-------------------------------------------------------------------------------
