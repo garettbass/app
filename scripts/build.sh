@@ -6,7 +6,7 @@ CMDLINE="$0 $@"
 
 function verbose {
     if [ $VERBOSE ]; then
-        echo "$@"
+        echo "$@\n"
     fi
 }
 
@@ -15,9 +15,9 @@ function verbose {
 function execute {
     verbose "$@"
     if [ $TIME ]; then
-        time "$@"
+        time "$@" || exit $?
     else
-        "$@"
+        "$@" || exit $?
     fi
 }
 
@@ -32,6 +32,18 @@ function realpath {
     else
         echo "$(cd "$(dirname "$path")"; pwd)/$(basename "$path")"
     fi
+}
+
+#-------------------------------------------------------------------------------
+
+function makedir {
+    if [[ ! -e "$1" ]]; then
+        mkdir -p "$1"
+    fi
+}
+
+function copydir {
+    execute "cp -R $1 $2"
 }
 
 #-------------------------------------------------------------------------------
@@ -62,7 +74,6 @@ function usage {
     echo "  -std=<...>    Set C/C++ standard, e.g "
     echo "  -D<...>[=...] Define preprocessor macro, e.g.: -DNDEBUG=1"
     echo "  -O<...>       Set optimization level, e.g.: -O0, -O1, -O2, -O3, -Ofast, -Os"
-    echo "  -o <...>      Specify output path."
     echo "  -g            Generate debug symbols."
     echo "  -v            Enable verbose output."
     echo "  -x <ext>      Specify source language, e.g.: -x c, -x c++"
@@ -84,13 +95,8 @@ while [ $# -gt 0 ]; do
             CFLAGS="$CFLAGS $1 -D_DEBUG=1"
             shift
         ;;
-        -D*|-O*|-std=*|-W*)
+        -D*|-I*|-O*|-std=*|-W*)
             CFLAGS="$CFLAGS $1"
-            shift
-        ;;
-        -o)
-            APP_BIN="$2"
-            shift
             shift
         ;;
         -x)
@@ -138,7 +144,7 @@ fi
 
 #-------------------------------------------------------------------------------
 
-verbose "$CMDLINE"
+verbose "\n$CMDLINE"
 
 #-------------------------------------------------------------------------------
 
@@ -146,17 +152,27 @@ APP_MAIN="${SOURCES[0]}"
 APP_ROOT="$(dirname $APP_MAIN)"
 APP_NAME="$(basename ${APP_MAIN%.*})"
 
+APP_BUILD_ROOT="$APP_ROOT/build"
+
+SCRIPTS_DIR="$(realpath $(dirname $0))"
+TEMPLATES_DIR="$(dirname $SCRIPTS_DIR)/templates"
+
 case $(uname | tr '[:upper:]' '[:lower:]') in
     linux*)
-        APP_HOST_OS=linux
+        BUILD_OS=linux
     ;;
     darwin*)
-        APP_HOST_OS=macos
+        BUILD_OS=macos
+        execute mkdir -p "$APP_BUILD_ROOT/macos"
+        execute cp -R "$TEMPLATES_DIR/macos" "$APP_BUILD_ROOT/macos/$APP_NAME.app"
+        APP_BIN="$APP_BUILD_ROOT/macos/$APP_NAME.app/Contents/MacOS/$APP_NAME"
     ;;
     msys*|mingw*)
-        APP_HOST_OS=windows
+        BUILD_OS=windows
+        execute mkdir -p "$APP_BUILD_ROOT/windows"
+        execute cp -R "$TEMPLATES_DIR/windows" "$APP_BUILD_ROOT/windows/$APP_NAME"
+        APP_BIN="$APP_BUILD_ROOT/windows/$APP_NAME/$APP_NAME.exe"
         CFLAGS="${CFLAGS} -D_CRT_SECURE_NO_WARNINGS"
-        APP_EXT=".exe"
     ;;
     *)
         echo "unrecognized operating system"
@@ -164,12 +180,9 @@ case $(uname | tr '[:upper:]' '[:lower:]') in
     ;;
 esac
 
-APP_BIN="${APP_BIN:=$APP_ROOT/$APP_NAME$APP_EXT}"
-
 #-------------------------------------------------------------------------------
 
-COMPILE="$CC $CFLAGS ${SOURCES[@]} -o $APP_BIN"
-execute $COMPILE
+execute "$CC" $CFLAGS ${SOURCES[@]} -o "$APP_BIN"
 STATUS=$?
 if [ $STATUS -gt 0 ]; then exit $STATUS; fi
 
