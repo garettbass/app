@@ -153,31 +153,18 @@ esac
 
 #-------------------------------------------------------------------------------
 
-if [ -z "$CC" ]; then
-    if [ -x "$(which cc)" ]; then
-        CC="$(which cc)"
-    elif [ -x "$(which gcc)" ]; then
-        CC="$(which gcc)"
-    elif [ -x "$(which clang)" ]; then
-        CC="$(which clang)"
-    fi
-fi
+CC="${CC:=$(command -v cc || command -v gcc || command -v clang)}"
 
 #-------------------------------------------------------------------------------
 
 execute "$CC" $CFLAGS ${SOURCES[@]} -o "$APP_BIN"
-STATUS=$?
-if [ $STATUS -gt 0 ]; then exit $STATUS; fi
 
 #-------------------------------------------------------------------------------
 
 if [ $RUN ]; then
     echo $''
-    verbose "$APP_BIN" "$@"
-    "$APP_BIN" "$@"
-    STATUS=$?
-    echo $''
-    echo "$APP_BIN" returned "$STATUS"
+    execute "$APP_BIN" "$@"
+    echo "$APP_BIN" returned "$?"
 fi
 
 #-------------------------------------------------------------------------------
@@ -188,6 +175,6 @@ fi
 
 #-------------------------------------------------------------------------------
 
-exit $STATUS
+exit
 
 #-------------------------------------------------------------------------------

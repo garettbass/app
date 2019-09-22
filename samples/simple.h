@@ -1,4 +1,4 @@
-///usr/bin/env sh $(dirname $0)/../scripts/appc.sh -std=c11 -x c "$0" "$@"; exit $?
+///usr/bin/env sh $(dirname $0)/../scripts/build.sh -std=c11 -x c "$0" "$@"; exit $?
 #include "../app.inl"
 
 int main(int argc, const char* argv[], const char* envp[]) {
