@@ -4,39 +4,6 @@ CMDLINE="$0 $@"
 
 #-------------------------------------------------------------------------------
 
-function verbose {
-    if [ $VERBOSE ]; then
-        echo "$@"
-        echo ""
-    fi
-}
-
-#-------------------------------------------------------------------------------
-
-function execute {
-    verbose "$@"
-    if [ $TIME ]; then
-        time "$@" || exit $?
-    else
-        "$@" || exit $?
-    fi
-}
-
-#-------------------------------------------------------------------------------
-
-function realpath {
-    local path="${1//\\//}"
-    if [ "$path" == "." ]; then
-        echo "$(pwd)"
-    elif [ "$path" == ".." ]; then
-        echo "$(dirname "$(pwd)")"
-    else
-        echo "$(cd "$(dirname "$path")"; pwd)/$(basename "$path")"
-    fi
-}
-
-#-------------------------------------------------------------------------------
-
 function usage {
     echo "Usage:"
     echo ""
@@ -53,6 +20,19 @@ function usage {
     echo "  --clean       Delete build artifacts."
     echo "  --            Run the compiled app, passing along remaining arguments."
     echo ""
+}
+
+#-------------------------------------------------------------------------------
+
+function realpath {
+    local path="${1//\\//}"
+    if [ "$path" == "." ]; then
+        echo "$(pwd)"
+    elif [ "$path" == ".." ]; then
+        echo "$(dirname "$(pwd)")"
+    else
+        echo "$(cd "$(dirname "$path")"; pwd)/$(basename "$path")"
+    fi
 }
 
 #-------------------------------------------------------------------------------
@@ -116,6 +96,25 @@ fi
 
 #-------------------------------------------------------------------------------
 
+function verbose {
+    if [ $VERBOSE ]; then
+        echo "$@"
+    fi
+}
+
+#-------------------------------------------------------------------------------
+
+function execute {
+    verbose "$@"
+    if [ $TIME ]; then
+        time "$@" || exit $?
+    else
+        "$@" || exit $?
+    fi
+}
+
+#-------------------------------------------------------------------------------
+
 verbose "$CMDLINE"
 
 #-------------------------------------------------------------------------------
@@ -155,8 +154,16 @@ esac
 #-------------------------------------------------------------------------------
 
 if [ -z "$CC" ]; then
-    CC="$(which cc)" || "$(which gcc)" || "$(which clang)"
+    if [ -x "$(which cc)" ]; then
+        CC="$(which cc)"
+    elif [ -x "$(which gcc)" ]; then
+        CC="$(which gcc)"
+    elif [ -x "$(which clang)" ]; then
+        CC="$(which clang)"
+    fi
 fi
+
+#-------------------------------------------------------------------------------
 
 execute "$CC" $CFLAGS ${SOURCES[@]} -o "$APP_BIN"
 STATUS=$?
@@ -173,8 +180,10 @@ if [ $RUN ]; then
     echo "$APP_BIN" returned "$STATUS"
 fi
 
+#-------------------------------------------------------------------------------
+
 if [ $CLEAN ]; then
-    rm -rf  "$APP_BUILD_ROOT"
+    execute rm -rf  "$APP_BUILD_ROOT"
 fi
 
 #-------------------------------------------------------------------------------
