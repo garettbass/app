@@ -1,5 +1,5 @@
 #pragma once
-#include "platform/platform.h"
+#include "detail/platform.h"
 
 //------------------------------------------------------------------------------
 
@@ -12,13 +12,13 @@
 
 //------------------------------------------------------------------------------
 
-#include "platform/common/app.inl"
+#include "detail/app.inl"
 #if APP_OS_IOS
-#include "platform/apple/ios/app.inl"
+#include "detail/apple/ios/app.inl"
 #elif APP_OS_MACOS
-#include "platform/apple/macos/app.inl"
+#include "detail/apple/macos/app.inl"
 #elif APP_OS_WINDOWS
-#include "platform/windows/app.inl"
+#include "detail/windows/app.inl"
 #endif
 
 //------------------------------------------------------------------------------

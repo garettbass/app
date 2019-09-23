@@ -1,5 +1,5 @@
 #pragma once
-#include "../dll.h"
+#include "dll.h"
 #include <assert.h>
 #include <stdio.h>
 

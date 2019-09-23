@@ -1,5 +1,5 @@
 #pragma once
-#include "../../common/app.inl"
+#include "../../app.inl"
 #include "../objc/appkit.h"
 #include "../objc/carbon.h"
 #include "../objc/coregraphics.h"
@@ -31,10 +31,10 @@ _app_autoreleasepool_popPush() {
 
 //------------------------------------------------------------------------------
 
-#include "app_cursor.inl"
-#include "app_key.inl"
-#include "app_update.inl"
-#include "app_window.inl"
+#include "cursor.inl"
+#include "key.inl"
+#include "update.inl"
+#include "window.inl"
 
 //------------------------------------------------------------------------------
 

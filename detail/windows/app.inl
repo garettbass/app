@@ -3,7 +3,7 @@
 #pragma comment(lib, "kernel32.lib")
 #pragma comment(lib, "user32.lib")
 #pragma comment(lib, "gdi32.lib")
-#include "../common/app.inl"
+#include "../app.inl"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,27 +12,37 @@
 
 APP_EXTERN_C_BEGIN
 app_static_initializer(_app_console_io) {
-    enum { _APP_ATTACH_PARENT_PROCESS = -1 };
-    typedef int (__stdcall * attach_console_t)(unsigned);
     app_dll* const kernel32 = app_dll_acquire("kernel32.dll");
+
+    typedef int (__stdcall * attach_console_t)(unsigned);
     attach_console_t const attach_console = (
-        (attach_console_t)app_dll_find_symbol(kernel32, "AttachConsole")
+        (attach_console_t)
+        app_dll_find_symbol(kernel32, "AttachConsole")
     );
+    enum { _APP_ATTACH_PARENT_PROCESS = -1 };
     if (attach_console(_APP_ATTACH_PARENT_PROCESS)) {
         freopen("CON", "r", stdin);
         freopen("CON", "w", stdout);
         freopen("CON", "w", stderr);
     }
+
+    typedef int (__stdcall * set_console_output_cp_t)(unsigned);
+    set_console_output_cp_t const set_console_output_cp = (
+        (set_console_output_cp_t)
+        app_dll_find_symbol(kernel32, "SetConsoleOutputCP")
+    );
+    enum { _APP_CONSOLE_OUTPUT_CP_UTF8 = 65001 };
+    set_console_output_cp(_APP_CONSOLE_OUTPUT_CP_UTF8);
 }
 APP_EXTERN_C_END
 
 //------------------------------------------------------------------------------
 
 #include "api.inl"
-#include "app_cursor.inl"
-#include "app_key.inl"
-#include "app_update.inl"
-#include "app_window.inl"
+#include "cursor.inl"
+#include "key.inl"
+#include "update.inl"
+#include "window.inl"
 
 //------------------------------------------------------------------------------
 

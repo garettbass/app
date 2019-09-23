@@ -15,6 +15,7 @@ function usage {
     echo "  -D<...>[=...] Define preprocessor macro, e.g.: -DNDEBUG=1"
     echo "  -O<...>       Set optimization level, e.g.: -O0, -O1, -O2, -O3, -Ofast, -Os"
     echo "  -g            Generate debug symbols."
+    echo "  -o <dir>      Set output directory."
     echo "  -v            Enable verbose output."
     echo "  -x <ext>      Specify source language, e.g.: -x c, -x c++"
     echo "  --clean       Delete build artifacts."
@@ -57,6 +58,11 @@ while [ $# -gt 0 ]; do
             shift
             shift
         ;;
+        -o)
+            APP_BUILD_ROOT="$2"
+            shift
+            shift
+        ;;
         -t)
             TIME=YES
             shift
@@ -84,6 +90,7 @@ while [ $# -gt 0 ]; do
         *)
             SOURCE="$(realpath $1)"
             SOURCES+=("$SOURCE")
+            CFLAGS="$CFLAGS $SOURCE"
             shift
         ;;
     esac
@@ -120,36 +127,39 @@ verbose "$CMDLINE"
 #-------------------------------------------------------------------------------
 
 APP_MAIN="${SOURCES[0]}"
-APP_ROOT="$(dirname $APP_MAIN)"
 APP_NAME="$(basename ${APP_MAIN%.*})"
-
-APP_BUILD_ROOT="$APP_ROOT/build"
+APP_BUILD_ROOT="${APP_BUILD_ROOT:=$(dirname $APP_MAIN)/build}"
 
 SCRIPTS_DIR="$(realpath $(dirname $0))"
 TEMPLATES_DIR="$(dirname $SCRIPTS_DIR)/templates"
 
 case $(uname | tr '[:upper:]' '[:lower:]') in
-    linux*)
-        BUILD_OS=linux
-    ;;
     darwin*)
         BUILD_OS=macos
-        execute mkdir -p "$APP_BUILD_ROOT/macos"
-        execute cp -R "$TEMPLATES_DIR/macos" "$APP_BUILD_ROOT/macos/$APP_NAME.app"
-        APP_BIN="$APP_BUILD_ROOT/macos/$APP_NAME.app/Contents/MacOS/$APP_NAME"
+        APP_BUILD_DIR="$APP_BUILD_ROOT/macos/$APP_NAME.app"
+        APP_BIN="$APP_BUILD_DIR/Contents/MacOS/$APP_NAME"
+    ;;
+    linux*)
+        BUILD_OS=linux
+        echo "unsupported operating system"
+        exit 1
     ;;
     msys*|mingw*)
         BUILD_OS=windows
-        execute mkdir -p "$APP_BUILD_ROOT/windows"
-        execute cp -R "$TEMPLATES_DIR/windows" "$APP_BUILD_ROOT/windows/$APP_NAME"
-        APP_BIN="$APP_BUILD_ROOT/windows/$APP_NAME/$APP_NAME.exe"
+        APP_BUILD_DIR="$APP_BUILD_ROOT/windows/$APP_NAME"
+        APP_BIN="$APP_BUILD_DIR/$APP_NAME.exe"
         CFLAGS="${CFLAGS} -D_CRT_SECURE_NO_WARNINGS"
     ;;
     *)
-        echo "unrecognized operating system"
+        echo "unsupported operating system"
         exit 1
     ;;
 esac
+
+execute mkdir -p "$APP_BUILD_DIR"
+execute rsync -avq --exclude=".placeholder" "$TEMPLATES_DIR/$BUILD_OS/" "$APP_BUILD_DIR/"
+execute rm -rf "$APP_BUILD_DIR/.placeholder"
+execute rm -f "$APP_BIN"
 
 #-------------------------------------------------------------------------------
 
@@ -157,7 +167,7 @@ CC="${CC:=$(command -v cc || command -v gcc || command -v clang)}"
 
 #-------------------------------------------------------------------------------
 
-execute "$CC" $CFLAGS ${SOURCES[@]} -o "$APP_BIN"
+execute "$CC" $CFLAGS -o "$APP_BIN"
 
 #-------------------------------------------------------------------------------
 
