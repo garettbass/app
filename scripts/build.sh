@@ -157,7 +157,8 @@ case $(uname | tr '[:upper:]' '[:lower:]') in
 esac
 
 execute mkdir -p "$APP_BUILD_DIR"
-execute rsync -avq --exclude=".placeholder" "$TEMPLATES_DIR/$BUILD_OS/" "$APP_BUILD_DIR/"
+# rsync not available on GitHub Actions windows-latest
+# execute rsync -avq --exclude=".placeholder" "$TEMPLATES_DIR/$BUILD_OS/" "$APP_BUILD_DIR/"
 execute rm -rf "$APP_BUILD_DIR/.placeholder"
 execute rm -f "$APP_BIN"
 
