@@ -157,7 +157,7 @@ case $(uname | tr '[:upper:]' '[:lower:]') in
 esac
 
 execute mkdir -p "$APP_BUILD_DIR"
-cp "$TEMPLATES_DIR/$BUILD_OS/." "$APP_BUILD_DIR/"
+cp -rf "$TEMPLATES_DIR/$BUILD_OS/." "$APP_BUILD_DIR/"
 
 #-------------------------------------------------------------------------------
 
