@@ -34,8 +34,8 @@ _app_wndproc(
         case _APP_WM_CHAR: {
             uint16_t utf16[2] = { (uint16_t)(wParam & 0xFFFF) };
             char utf8[8] = {0};
-            enum { _app_CP_UTF8 = 65001 };
-            _app_WideCharToMultiByte(_app_CP_UTF8, 0, utf16, 1, utf8, 7, NULL, NULL);
+            enum { _APP_CP_UTF8 = 65001 };
+            _app_WideCharToMultiByte(_APP_CP_UTF8, 0, utf16, 1, utf8, 7, NULL, NULL);
             if (utf8[0] == '\r') utf8[0] = '\n';
             _app_text_input_append_string(utf8);
             break;

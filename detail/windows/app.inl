@@ -31,8 +31,8 @@ app_static_initializer(_app_console_io) {
         (set_console_output_cp_t)
         app_dll_find_symbol(kernel32, "SetConsoleOutputCP")
     );
-    enum { _APP_CONSOLE_OUTPUT_CP_UTF8 = 65001 };
-    set_console_output_cp(_APP_CONSOLE_OUTPUT_CP_UTF8);
+    enum { _APP_CP_UTF8 = 65001 };
+    set_console_output_cp(_APP_CP_UTF8);
 }
 APP_EXTERN_C_END
 
@@ -96,20 +96,20 @@ int __stdcall WinMain(void* Instance, void* Previous, char* CmdLine, int nShowCm
     }
 
     enum {
-        _app_IDC_ARROW       = 32512,
-        _app_IDC_CROSS       = 32515,
-        _app_IDC_IBEAM       = 32513,
-        _app_IDC_HAND        = 32649,
-        _app_IDC_SIZENS      = 32645,
-        _app_IDC_SIZEWE      = 32644,
+        _APP_IDC_ARROW       = 32512,
+        _APP_IDC_CROSS       = 32515,
+        _APP_IDC_IBEAM       = 32513,
+        _APP_IDC_HAND        = 32649,
+        _APP_IDC_SIZENS      = 32645,
+        _APP_IDC_SIZEWE      = 32644,
     };
     _app_hcursor[APP_CURSOR_DEFAULT]   =
-    _app_hcursor[APP_CURSOR_ARROW]     = _app_LoadCursorA(NULL, (const char*)(size_t)_app_IDC_ARROW);
-    _app_hcursor[APP_CURSOR_CROSSHAIR] = _app_LoadCursorA(NULL, (const char*)(size_t)_app_IDC_CROSS);
-    _app_hcursor[APP_CURSOR_TEXT]      = _app_LoadCursorA(NULL, (const char*)(size_t)_app_IDC_IBEAM);
-    _app_hcursor[APP_CURSOR_LINK]      = _app_LoadCursorA(NULL, (const char*)(size_t)_app_IDC_HAND);
-    _app_hcursor[APP_CURSOR_DRAG_NS]   = _app_LoadCursorA(NULL, (const char*)(size_t)_app_IDC_SIZENS);
-    _app_hcursor[APP_CURSOR_DRAG_EW]   = _app_LoadCursorA(NULL, (const char*)(size_t)_app_IDC_SIZEWE);
+    _app_hcursor[APP_CURSOR_ARROW]     = _app_LoadCursorA(NULL, (const char*)(size_t)_APP_IDC_ARROW);
+    _app_hcursor[APP_CURSOR_CROSSHAIR] = _app_LoadCursorA(NULL, (const char*)(size_t)_APP_IDC_CROSS);
+    _app_hcursor[APP_CURSOR_TEXT]      = _app_LoadCursorA(NULL, (const char*)(size_t)_APP_IDC_IBEAM);
+    _app_hcursor[APP_CURSOR_LINK]      = _app_LoadCursorA(NULL, (const char*)(size_t)_APP_IDC_HAND);
+    _app_hcursor[APP_CURSOR_DRAG_NS]   = _app_LoadCursorA(NULL, (const char*)(size_t)_APP_IDC_SIZENS);
+    _app_hcursor[APP_CURSOR_DRAG_EW]   = _app_LoadCursorA(NULL, (const char*)(size_t)_APP_IDC_SIZEWE);
 
     #ifndef __argc
         // MinGW gcc does not #define __argc (*__p___argc())

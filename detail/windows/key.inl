@@ -264,7 +264,7 @@ static const unsigned char _app_key_from_key_code_map[] = {
 static_assert(sizeof(_app_key_from_key_code_map) == 256, "?");
 
 enum {
-    _app_key_from_key_code_map_length =
+    _APP_KEY_FROM_KEY_CODE_MAP_LENGTH =
         sizeof(_app_key_from_key_code_map)/
         sizeof(_app_key_from_key_code_map[0])
 };
@@ -278,13 +278,13 @@ APP_EXTERN_C_BEGIN
 static inline app_key
 _app_key_from_key_code(unsigned key_code) {
     return
-        (key_code < _app_key_from_key_code_map_length)
+        (key_code < _APP_KEY_FROM_KEY_CODE_MAP_LENGTH)
         ? (app_key)_app_key_from_key_code_map[key_code]
         : (APP_KEY_NONE);
 }
 
 #pragma GCC poison _app_key_from_key_code_map
-#pragma GCC poison _app_key_from_key_code_map_length
+#pragma GCC poison _APP_KEY_FROM_KEY_CODE_MAP_LENGTH
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

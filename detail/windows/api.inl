@@ -3,7 +3,7 @@
 
 //------------------------------------------------------------------------------
 
-typedef enum VK {
+enum {
      _APP_VK_LBUTTON              = 0x01, // Left mouse button
      _APP_VK_RBUTTON              = 0x02, // Right mouse button
      _APP_VK_CANCEL               = 0x03, // Control-break processing
@@ -282,7 +282,7 @@ typedef enum VK {
      _APP_VK_NONAME               = 0xFC, // Reserved
      _APP_VK_PA1                  = 0xFD, // PA1 key
      _APP_VK_OEM_CLEAR            = 0xFE, // Clear key
-} VK;
+};
 
 //------------------------------------------------------------------------------
 
