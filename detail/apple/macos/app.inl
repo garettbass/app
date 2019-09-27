@@ -61,6 +61,9 @@ _app_objc_method(
     _app_delegate,
     applicationDidFinishLaunching,_app_NSNotification*
 ) {
+    (void)self;
+    (void)cmd;
+    (void)applicationDidFinishLaunching;
     puts(__func__);
 }
 
@@ -69,6 +72,9 @@ _app_objc_method(
     _app_delegate,
     applicationShouldTerminate,_app_NSApplication*
 ) {
+    (void)self;
+    (void)cmd;
+    (void)applicationShouldTerminate;
     puts(__func__);
     app_quit();
     return _app_NSApplicationTerminateCancel;
@@ -79,6 +85,9 @@ _app_objc_method(
     _app_delegate,
     applicationWillTerminate,_app_NSNotification*
 ) {
+    (void)self;
+    (void)cmd;
+    (void)applicationWillTerminate;
     puts(__func__);
     app_quit();
 }

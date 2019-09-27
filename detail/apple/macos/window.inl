@@ -24,6 +24,10 @@ _app_objc_obj_swizzle(void,_app_NSWindow,dealloc) {
 
 _app_objc_obj_swizzle(void,_app_NSWindow,keyDown,_app_NSEvent*) {
     // _app_NSWindow.keyDown will produce an error sound
+    (void)imp;
+    (void)self;
+    (void)cmd;
+    (void)keyDown;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

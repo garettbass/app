@@ -38,7 +38,7 @@ app_cursor_set(app_cursor cursor) {
 
 app_point
 app_cursor_get_position(app_window* /*optional*/ window) {
-    CGPoint point = { 0 };
+    CGPoint point = {0,0};
     HIGetMousePosition(kHICoordSpaceScreenPixel, NULL, &point);
     app_point position = (app_point){ (float)point.x, (float)point.y };
     if (window) {
@@ -53,6 +53,8 @@ void
 app_cursor_set_position(app_point position, app_window* /*optional*/ window) {
     // TODO
     assert(false);
+    (void)position;
+    (void)window;
 }
 
 //------------------------------------------------------------------------------

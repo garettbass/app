@@ -174,7 +174,7 @@ typedef struct _app_objc_super2 {
                 unsigned methodCount = 0;
                 _app_objc_method** methodList = class_copyMethodList(cls, &methodCount);
                 printf("candidates: %u\n", methodCount);
-                for (int i = 0; i < methodCount; ++i) {
+                for (unsigned i = 0; i < methodCount; ++i) {
                     _app_objc_selector* sel = method_getName(methodList[i]);
                     const char* const methodname = sel_getName(sel);
                     fputs("    ", stdout);
@@ -344,17 +344,13 @@ typedef struct _app_objc_super2 {
 #define __app_objc_msg_sel_initializer(CLASS, METHOD_TYPE, /*PARAMS*/...)\
         ___app_objc_msg_sel_initializer(\
             &_app_objc_sel(CLASS, __VA_ARGS__),\
-            __app_objc_msg_string(CLASS, __VA_ARGS__),\
-            CLASS##_class,\
-            class_get##METHOD_TYPE);
+            __app_objc_msg_string(CLASS, __VA_ARGS__));
 
         APP_EXTERN_C_BEGIN
         static inline void
         ___app_objc_msg_sel_initializer(
             _app_objc_selector** const psel,
-            const char name[],
-            _app_objc_class* cls,
-            _app_objc_method* (*getMethod)(_app_objc_class*,_app_objc_selector*)
+            const char name[])
         ) {
             assert(*psel == NULL);
             *psel = sel_getUid(name);
