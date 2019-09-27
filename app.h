@@ -26,12 +26,7 @@
 
 typedef struct app_point { float x, y; } app_point;
 
-typedef struct app_rect {
-    union {
-        struct { float   x, y,   w, h; };
-        struct { app_point origin, size; };
-    };
-} app_rect;
+typedef struct app_rect { float x, y, w, h; } app_rect;
 
 typedef struct app_window app_window;
 

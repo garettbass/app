@@ -18,12 +18,15 @@ APP_EXTERN_C_BEGIN
 // }
 
 _app_objc_obj_swizzle(void,_app_NSWindow,dealloc) {
+    (void)imp;
+    (void)self;
+    (void)cmd;
     printf("_app_NSWindow.%s\n",(const char*)cmd);
     imp(self, cmd);
 }
 
 _app_objc_obj_swizzle(void,_app_NSWindow,keyDown,_app_NSEvent*) {
-    // _app_NSWindow.keyDown will produce an error sound
+    // NSWindow.keyDown will produce an error sound
     (void)imp;
     (void)self;
     (void)cmd;
@@ -134,7 +137,7 @@ app_window_get_frame(app_window* const window) {
     _app_NSRect nsrect = _app_objc_obj(nswindow,_app_NSWindow,frame);
     _app_orient_NSRect_to_desktop(&nsrect);
 
-    app_rect frame = { 0 };
+    app_rect frame = {0,0,0,0};
     frame.x = (float)nsrect.origin.x;
     frame.y = (float)nsrect.origin.y;
     frame.w = (float)nsrect.size.width;
@@ -166,7 +169,7 @@ app_window_get_viewport(app_window* const window) {
 
     _app_orient_NSRect_to_desktop(&nsrect);
 
-    app_rect viewport = { 0 };
+    app_rect viewport = {0,0,0,0};
     viewport.x = (float)nsrect.origin.x;
     viewport.y = (float)nsrect.origin.y;
     viewport.w = (float)nsrect.size.width;
