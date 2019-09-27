@@ -350,7 +350,7 @@ typedef struct _app_objc_super2 {
         static inline void
         ___app_objc_msg_sel_initializer(
             _app_objc_selector** const psel,
-            const char name[])
+            const char name[]
         ) {
             assert(*psel == NULL);
             *psel = sel_getUid(name);
