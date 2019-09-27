@@ -3,7 +3,7 @@
 
 //------------------------------------------------------------------------------
 
-_app_objc_framework(CoreGraphics)
+_app_objc_framework(CoreGraphics, "CoreGraphics.framework/CoreGraphics")
 
 //------------------------------------------------------------------------------
 
@@ -122,11 +122,11 @@ _app_objc_import(
         CGError,
         CGAssociateMouseAndMouseCursorPosition,(int connected)),
 
-    function(CGColorSpace*,CGColorSpaceCreateWithName,(NSString* name)),
+    function(CGColorSpace*,CGColorSpaceCreateWithName,(_app_NSString* name)),
 
-    pointer(NSString*,kCGColorSpaceGenericGray),
+    pointer(_app_NSString*,kCGColorSpaceGenericGray),
 
-    pointer(NSString*,kCGColorSpaceGenericRGB),
+    pointer(_app_NSString*,kCGColorSpaceGenericRGB),
 
     function(
         CGContext*,

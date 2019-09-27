@@ -3,187 +3,155 @@
 
 //------------------------------------------------------------------------------
 
-_app_objc_framework(AppKit)
+_app_objc_framework(_app_AppKit, "AppKit.framework/AppKit")
 
-_app_objc_class(NSApplication);
-_app_objc_class(NSCursor);
-_app_objc_class(NSDate);
-_app_objc_class(NSEvent);
-_app_objc_class(NSGraphicsContext);
-_app_objc_class(NSMenu);
-_app_objc_class(NSMenuItem);
-_app_objc_class(NSNotificationCenter);
-_app_objc_class(NSPersistentUIManager);
-_app_objc_class(NSScreen);
-_app_objc_class(NSView);
-_app_objc_class(NSWindow);
+_app_objc_class(_app_NSApplication);
+_app_objc_class(_app_NSCursor);
+_app_objc_class(_app_NSDate);
+_app_objc_class(_app_NSEvent);
+_app_objc_class(_app_NSGraphicsContext);
+_app_objc_class(_app_NSMenu);
+_app_objc_class(_app_NSMenuItem);
+_app_objc_class(_app_NSNotificationCenter);
+_app_objc_class(_app_NSPersistentUIManager);
+_app_objc_class(_app_NSScreen);
+_app_objc_class(_app_NSView);
+_app_objc_class(_app_NSWindow);
 
 //------------------------------------------------------------------------------
 
-typedef enum NSApplicationTerminateReply {
-    NSApplicationTerminateCancel = 0,
-    NSApplicationTerminateNow    = 1,
-    NSApplicationTerminateLater  = 2,
-} NSApplicationTerminateReply;
+typedef enum _app_NSApplicationTerminateReply {
+    _app_NSApplicationTerminateCancel = 0,
+    _app_NSApplicationTerminateNow    = 1,
+    _app_NSApplicationTerminateLater  = 2,
+} _app_NSApplicationTerminateReply;
+
+//------------------------------------------------------------------------------
+
+typedef enum _app_NSEventType {
+    _app_NSEventTypeLeftMouseDown      = 1,
+    _app_NSEventTypeLeftMouseUp        = 2,
+    _app_NSEventTypeRightMouseDown     = 3,
+    _app_NSEventTypeRightMouseUp       = 4,
+    _app_NSEventTypeMouseMoved         = 5,
+    _app_NSEventTypeLeftMouseDragged   = 6,
+    _app_NSEventTypeRightMouseDragged  = 7,
+    _app_NSEventTypeMouseEntered       = 8,
+    _app_NSEventTypeMouseExited        = 9,
+    _app_NSEventTypeKeyDown            = 10,
+    _app_NSEventTypeKeyUp              = 11,
+    _app_NSEventTypeFlagsChanged       = 12,
+    _app_NSEventTypeAppKitDefined      = 13,
+    _app_NSEventTypeSystemDefined      = 14,
+    _app_NSEventTypeApplicationDefined = 15,
+    _app_NSEventTypePeriodic           = 16,
+    _app_NSEventTypeCursorUpdate       = 17,
+    _app_NSEventTypeScrollWheel        = 22,
+    _app_NSEventTypeTabletPoint        = 23,
+    _app_NSEventTypeTabletProximity    = 24,
+    _app_NSEventTypeOtherMouseDown     = 25,
+    _app_NSEventTypeOtherMouseUp       = 26,
+    _app_NSEventTypeOtherMouseDragged  = 27,
+    _app_NSEventTypeGesture            = 29,
+    _app_NSEventTypeMagnify            = 30,
+    _app_NSEventTypeSwipe              = 31,
+    _app_NSEventTypeRotate             = 18,
+    _app_NSEventTypeBeginGesture       = 19,
+    _app_NSEventTypeEndGesture         = 20,
+    _app_NSEventTypeSmartMagnify       = 32,
+    _app_NSEventTypeQuickLook          = 33,
+    _app_NSEventTypePressure           = 34,
+    _app_NSEventTypeDirectTouch        = 37,
+} _app_NSEventType;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-typedef enum NSBackingStoreType {
-    NSBackingStoreBuffered = 2,
-} NSBackingStoreType;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-typedef enum NSEventMask {
-    NSEventMaskAny = (int)~0u,
-} NSEventMask;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-typedef enum NSEventType {
-    NSEventTypeLeftMouseDown      = 1,
-    NSEventTypeLeftMouseUp        = 2,
-    NSEventTypeRightMouseDown     = 3,
-    NSEventTypeRightMouseUp       = 4,
-    NSEventTypeMouseMoved         = 5,
-    NSEventTypeLeftMouseDragged   = 6,
-    NSEventTypeRightMouseDragged  = 7,
-    NSEventTypeMouseEntered       = 8,
-    NSEventTypeMouseExited        = 9,
-    NSEventTypeKeyDown            = 10,
-    NSEventTypeKeyUp              = 11,
-    NSEventTypeFlagsChanged       = 12,
-    NSEventTypeAppKitDefined      = 13,
-    NSEventTypeSystemDefined      = 14,
-    NSEventTypeApplicationDefined = 15,
-    NSEventTypePeriodic           = 16,
-    NSEventTypeCursorUpdate       = 17,
-    NSEventTypeScrollWheel        = 22,
-    NSEventTypeTabletPoint        = 23,
-    NSEventTypeTabletProximity    = 24,
-    NSEventTypeOtherMouseDown     = 25,
-    NSEventTypeOtherMouseUp       = 26,
-    NSEventTypeOtherMouseDragged  = 27,
-    NSEventTypeGesture            = 29,
-    NSEventTypeMagnify            = 30,
-    NSEventTypeSwipe              = 31,
-    NSEventTypeRotate             = 18,
-    NSEventTypeBeginGesture       = 19,
-    NSEventTypeEndGesture         = 20,
-    NSEventTypeSmartMagnify       = 32,
-    NSEventTypeQuickLook          = 33,
-    NSEventTypePressure           = 34,
-    NSEventTypeDirectTouch        = 37,
-} NSEventType;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-typedef enum NSEventSubtype {
-    /* event subtypes for NSEventTypeAppKitDefined events */
-    NSEventSubtypeWindowExposed          = 0,
-    NSEventSubtypeApplicationActivated   = 1,
-    NSEventSubtypeApplicationDeactivated = 2,
-    NSEventSubtypeWindowMoved            = 4,
-    NSEventSubtypeScreenChanged          = 8,
-
-    /* event subtypes for NSEventTypeSystemDefined events */
-    NSEventSubtypePowerOff  = 1,
-
-    /* event subtypes for mouse events */
-    NSEventSubtypeMouseEvent      = 0,
-    NSEventSubtypeTabletPoint     = 1,
-    NSEventSubtypeTabletProximity = 2,
-    NSEventSubtypeTouch           = 3,
-} NSEventSubtype;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-typedef enum NSEventModifierFlags {
-    NSEventModifierFlagCapsLock   = 1 << 16,
-    NSEventModifierFlagShift      = 1 << 17,
-    NSEventModifierFlagControl    = 1 << 18,
-    NSEventModifierFlagOption     = 1 << 19,
-    NSEventModifierFlagCommand    = 1 << 20,
-    NSEventModifierFlagNumericPad = 1 << 21,
-    NSEventModifierFlagHelp       = 1 << 22,
-    NSEventModifierFlagFunction   = 1 << 23,
-} NSEventModifierFlags;
+typedef enum _app_NSEventModifierFlags {
+    _app_NSEventModifierFlagCapsLock   = 1 << 16,
+    _app_NSEventModifierFlagShift      = 1 << 17,
+    _app_NSEventModifierFlagControl    = 1 << 18,
+    _app_NSEventModifierFlagOption     = 1 << 19,
+    _app_NSEventModifierFlagCommand    = 1 << 20,
+    _app_NSEventModifierFlagNumericPad = 1 << 21,
+    _app_NSEventModifierFlagHelp       = 1 << 22,
+    _app_NSEventModifierFlagFunction   = 1 << 23,
+} _app_NSEventModifierFlags;
 
 // Used to retrieve only the device-independent modifier flags,
 // allowing applications to mask off the device-dependent modifier flags,
 // including event coalescing information.
-#define NSEventModifierFlagDeviceIndependentFlagsMask (0xffff0000UL)
+#define _app_NSEventModifierFlagDeviceIndependentFlagsMask (0xffff0000UL)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-typedef enum NSWindowStyleMask {
-    NSWindowStyleMaskBorderless             = 0,
-    NSWindowStyleMaskTitled                 = 1 << 0,
-    NSWindowStyleMaskClosable               = 1 << 1,
-    NSWindowStyleMaskMiniaturizable         = 1 << 2,
-    NSWindowStyleMaskResizable              = 1 << 3,
-    NSWindowStyleMaskUtilityWindow          = 1 << 4,
-    NSWindowStyleMaskDocModalWindow         = 1 << 6,
-    NSWindowStyleMaskNonactivatingPanel     = 1 << 7,
-    NSWindowStyleMaskUnifiedTitleAndToolbar = 1 << 12,
-    NSWindowStyleMaskFullScreen             = 1 << 14,
-    NSWindowStyleMaskFullSizeContentView    = 1 << 15,
-    NSWindowStyleMaskHUDWindow              = 1 << 13,
-} NSWindowStyleMask;
+typedef enum _app_NSWindowStyleMask {
+    _app_NSWindowStyleMaskBorderless             = 0,
+    _app_NSWindowStyleMaskTitled                 = 1 << 0,
+    _app_NSWindowStyleMaskClosable               = 1 << 1,
+    _app_NSWindowStyleMaskMiniaturizable         = 1 << 2,
+    _app_NSWindowStyleMaskResizable              = 1 << 3,
+    _app_NSWindowStyleMaskUtilityWindow          = 1 << 4,
+    _app_NSWindowStyleMaskDocModalWindow         = 1 << 6,
+    _app_NSWindowStyleMaskNonactivatingPanel     = 1 << 7,
+    _app_NSWindowStyleMaskUnifiedTitleAndToolbar = 1 << 12,
+    _app_NSWindowStyleMaskFullScreen             = 1 << 14,
+    _app_NSWindowStyleMaskFullSizeContentView    = 1 << 15,
+    _app_NSWindowStyleMaskHUDWindow              = 1 << 13,
+} _app_NSWindowStyleMask;
 
 //------------------------------------------------------------------------------
 
 _app_objc_interface(
-    NSApplication,
-    cls(NSApplication*, sharedApplication),
-    obj(void,           activateIgnoringOtherApps,bool),
-    obj(_app_objc_id,             delegate),
-    obj(void,           finishLaunching),
-    obj(bool,           isActive),
-    obj(NSWindow*,      keyWindow),
-    obj(NSMenu*,        mainMenu),
-    obj(NSEvent*,       nextEventMatchingMask,NSEventMask,
-                        untilDate,NSDate*,
-                        inMode,NSString*,
-                        dequeue,bool),
-    obj(void,           sendEvent,NSEvent*),
-    obj(void,           setActivationPolicy,size_t),
-    obj(void,           setDelegate,_app_objc_id),
-    obj(void,           setMainMenu,NSMenu*),
-    obj(void,           terminate,_app_objc_id),
-    obj(void,           updateWindows),
-    obj(NSArray*,       windows),
+    _app_NSApplication,
+    cls(_app_NSApplication*, sharedApplication),
+    obj(void,                activateIgnoringOtherApps,bool),
+    obj(_app_objc_id,        delegate),
+    obj(void,                finishLaunching),
+    obj(bool,                isActive),
+    obj(_app_NSWindow*,      keyWindow),
+    obj(_app_NSMenu*,        mainMenu),
+    obj(_app_NSEvent*,       nextEventMatchingMask,unsigned,
+                             untilDate,_app_NSDate*,
+                             inMode,_app_NSString*,
+                             dequeue,bool),
+    obj(void,                sendEvent,_app_NSEvent*),
+    obj(void,                setActivationPolicy,size_t),
+    obj(void,                setDelegate,_app_objc_id),
+    obj(void,                setMainMenu,_app_NSMenu*),
+    obj(void,                terminate,_app_objc_id),
+    obj(void,                updateWindows),
+    obj(_app_NSArray*,       windows),
 )
 
-#define NSApp (_app_objc_cls(NSApplication, sharedApplication))
+#define _app_NSApp (_app_objc_cls(_app_NSApplication, sharedApplication))
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 _app_objc_interface(
-    NSCursor,
-    cls(NSCursor*, currentCursor),
-    cls(NSCursor*, currentSystemCursor),
-    cls(NSCursor*, arrowCursor),
-    cls(NSCursor*, IBeamCursor),
-    cls(NSCursor*, crosshairCursor),
-    cls(NSCursor*, closedHandCursor),
-    cls(NSCursor*, openHandCursor),
-    cls(NSCursor*, pointingHandCursor),
-    cls(NSCursor*, resizeLeftCursor),
-    cls(NSCursor*, resizeRightCursor),
-    cls(NSCursor*, resizeLeftRightCursor),
-    cls(NSCursor*, resizeUpCursor),
-    cls(NSCursor*, resizeDownCursor),
-    cls(NSCursor*, resizeUpDownCursor),
-    cls(NSCursor*, disappearingItemCursor),
-    cls(NSCursor*, IBeamCursorForVerticalLayout),
-    cls(NSCursor*, operationNotAllowedCursor),
-    cls(NSCursor*, dragLinkCursor),
-    cls(NSCursor*, dragCopyCursor),
-    cls(NSCursor*, contextualMenuCursor),
-    cls(NSCursor*, hide),
-    cls(NSCursor*, unhide),
-    obj(NSCursor*, initWithCGImage,_app_objc_id,size,NSSize),
+    _app_NSCursor,
+    cls(_app_NSCursor*, currentCursor),
+    cls(_app_NSCursor*, currentSystemCursor),
+    cls(_app_NSCursor*, arrowCursor),
+    cls(_app_NSCursor*, IBeamCursor),
+    cls(_app_NSCursor*, crosshairCursor),
+    cls(_app_NSCursor*, closedHandCursor),
+    cls(_app_NSCursor*, openHandCursor),
+    cls(_app_NSCursor*, pointingHandCursor),
+    cls(_app_NSCursor*, resizeLeftCursor),
+    cls(_app_NSCursor*, resizeRightCursor),
+    cls(_app_NSCursor*, resizeLeftRightCursor),
+    cls(_app_NSCursor*, resizeUpCursor),
+    cls(_app_NSCursor*, resizeDownCursor),
+    cls(_app_NSCursor*, resizeUpDownCursor),
+    cls(_app_NSCursor*, disappearingItemCursor),
+    cls(_app_NSCursor*, IBeamCursorForVerticalLayout),
+    cls(_app_NSCursor*, operationNotAllowedCursor),
+    cls(_app_NSCursor*, dragLinkCursor),
+    cls(_app_NSCursor*, dragCopyCursor),
+    cls(_app_NSCursor*, contextualMenuCursor),
+    cls(_app_NSCursor*, hide),
+    cls(_app_NSCursor*, unhide),
+    obj(_app_NSCursor*, initWithCGImage,_app_objc_id,size,_app_NSSize),
     obj(void,      push),
     obj(void,      pop),
     obj(void,      set),
@@ -192,42 +160,41 @@ _app_objc_interface(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 _app_objc_interface(
-    NSDate,
-    cls(NSDate*, date),
-    cls(NSDate*, dateWithTimeIntervalSinceNow,NSTimeInterval),
-    cls(NSDate*, dateWithTimeInterval,NSTimeInterval,sinceDate,NSDate*),
-    cls(NSDate*, distantPast),
-    cls(NSDate*, distantFuture),
-    obj(NSDate*, initWithTimeInterval,NSTimeInterval,sinceDate,NSDate*),
+    _app_NSDate,
+    cls(_app_NSDate*, date),
+    cls(_app_NSDate*, dateWithTimeIntervalSinceNow,_app_NSTimeInterval),
+    cls(_app_NSDate*, dateWithTimeInterval,_app_NSTimeInterval,sinceDate,_app_NSDate*),
+    cls(_app_NSDate*, distantPast),
+    cls(_app_NSDate*, distantFuture),
+    obj(_app_NSDate*, initWithTimeInterval,_app_NSTimeInterval,sinceDate,_app_NSDate*),
 )
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 _app_objc_interface(
-    NSEvent,
-    cls(NSTimeInterval,         doubleClickInterval),
-    cls(NSTimeInterval,         keyRepeatDelay),
-    cls(NSTimeInterval,         keyRepeatInterval),
-    cls(NSUInteger,             pressedMouseButtons),
-    cls(NSPoint,                mouseLocation),
-    obj(NSInteger,              buttonNumber),
-    obj(NSInteger,              clickCount),
-    obj(NSPoint,                locationInWindow),
+    _app_NSEvent,
+    cls(_app_NSTimeInterval,         doubleClickInterval),
+    cls(_app_NSTimeInterval,         keyRepeatDelay),
+    cls(_app_NSTimeInterval,         keyRepeatInterval),
+    cls(_app_NSUInteger,             pressedMouseButtons),
+    cls(_app_NSPoint,                mouseLocation),
+    obj(_app_NSInteger,              buttonNumber),
+    obj(_app_NSInteger,              clickCount),
+    obj(_app_NSPoint,                locationInWindow),
     obj(CGFloat,                deltaX),
     obj(CGFloat,                deltaY),
     obj(CGFloat,                deltaZ),
-    obj(NSInteger,              absoluteX),
-    obj(NSInteger,              absoluteY),
-    obj(NSInteger,              absoluteZ),
+    obj(_app_NSInteger,              absoluteX),
+    obj(_app_NSInteger,              absoluteY),
+    obj(_app_NSInteger,              absoluteZ),
     obj(CGFloat,                scrollingDeltaX),
     obj(CGFloat,                scrollingDeltaY),
-    obj(NSEventModifierFlags,   modifierFlags),
-    obj(NSEventSubtype,         subtype),
-    obj(NSTimeInterval,         timestamp),
-    obj(NSEventType,            type),
-    obj(NSWindow*,              window),
-    obj(NSString*,              characters),
-    obj(NSString*,              charactersIgnoringModifiers),
+    obj(_app_NSEventModifierFlags,   modifierFlags),
+    obj(_app_NSTimeInterval,         timestamp),
+    obj(_app_NSEventType,       type),
+    obj(_app_NSWindow*,              window),
+    obj(_app_NSString*,              characters),
+    obj(_app_NSString*,              charactersIgnoringModifiers),
     obj(bool,                   isARepeat),
     obj(unsigned short,         keyCode),
 )
@@ -235,48 +202,48 @@ _app_objc_interface(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 _app_objc_interface(
-    NSGraphicsContext,
-    cls(NSGraphicsContext*,graphicsContextWithWindow,NSWindow*),
-    cls(NSGraphicsContext*, currentContext),
-    cls(void,setCurrentContext,NSGraphicsContext*),
+    _app_NSGraphicsContext,
+    cls(_app_NSGraphicsContext*,graphicsContextWithWindow,_app_NSWindow*),
+    cls(_app_NSGraphicsContext*, currentContext),
+    cls(void,setCurrentContext,_app_NSGraphicsContext*),
     obj(CGContext*,CGContext),
 )
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 _app_objc_interface(
-    NSMenu,
-    obj(NSMenu*,   initWithTitle,NSString*),
-    obj(void,      addItem,NSMenuItem*),
-    obj(NSString*, title),
+    _app_NSMenu,
+    obj(_app_NSMenu*,   initWithTitle,_app_NSString*),
+    obj(void,      addItem,_app_NSMenuItem*),
+    obj(_app_NSString*, title),
 )
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 _app_objc_interface(
-    NSMenuItem,
-    obj(NSMenuItem*,    initWithTitle,NSString*,
+    _app_NSMenuItem,
+    obj(_app_NSMenuItem*,    initWithTitle,_app_NSString*,
                         action,_app_objc_selector*,
-                        keyEquivalent,NSString*),
-    obj(void,           setKeyEquivalentModifierMask,NSEventModifierFlags),
-    obj(void,           setSubmenu,NSMenu*),
+                        keyEquivalent,_app_NSString*),
+    obj(void,           setKeyEquivalentModifierMask,_app_NSEventModifierFlags),
+    obj(void,           setSubmenu,_app_NSMenu*),
     obj(void,           setTarget,_app_objc_id),
-    obj(NSString*,      title),
+    obj(_app_NSString*,      title),
 )
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 _app_objc_interface(
-    NSNotificationCenter,
-    cls(NSNotificationCenter*,defaultCenter),
-    obj(void,postNotificationName,NSString*,object,_app_objc_id),
+    _app_NSNotificationCenter,
+    cls(_app_NSNotificationCenter*,defaultCenter),
+    obj(void,postNotificationName,_app_NSString*,object,_app_objc_id),
 )
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 _app_objc_interface(
-    NSPersistentUIManager,
-    cls(NSPersistentUIManager*, sharedManager),
+    _app_NSPersistentUIManager,
+    cls(_app_NSPersistentUIManager*, sharedManager),
     obj(bool,                   shouldRestoreStateOnLaunch),
     obj(bool,                   promptToIgnorePersistentState),
     obj(void,                   ignoreAnyPreexistingPersistentState),
@@ -287,44 +254,39 @@ _app_objc_interface(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 _app_objc_interface(
-    NSScreen,
-    cls(NSScreen*,   mainScreen),
-    cls(NSArray*,    screens),
-    obj(NSRect,      frame),
+    _app_NSScreen,
+    cls(_app_NSScreen*,   mainScreen),
+    cls(_app_NSArray*,    screens),
+    obj(_app_NSRect,      frame),
 )
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 _app_objc_interface(
-    NSView,
-    obj(NSView*,    superview),
-    obj(NSArray*,   subviews),
-    obj(NSRect,     bounds),
+    _app_NSView,
+    obj(_app_NSView*,    superview),
+    obj(_app_NSArray*,   subviews),
+    obj(_app_NSRect,     bounds),
     obj(void,       display),
-    obj(NSRect,     frame),
-    obj(NSWindow*,  window),
-    obj(void,       drawRect,NSRect),
+    obj(_app_NSRect,     frame),
+    obj(_app_NSWindow*,  window),
+    obj(void,       drawRect,_app_NSRect),
     obj(void,       removeFromSuperview),
 )
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 _app_objc_interface(
-    NSWindow,
-    obj(NSWindow*,          initWithContentRect,NSRect,
-                            styleMask,NSWindowStyleMask,
-                            backing,NSBackingStoreType,
-                            defer,bool,
-                            screen,NSScreen*),
+    _app_NSWindow,
     obj(void,               center),
     obj(void,               close),
-    obj(NSRect,             contentRectForFrameRect,NSRect),
-    obj(NSView*,            contentView),
+    obj(_app_NSRect,             contentRectForFrameRect,_app_NSRect),
+    obj(_app_NSView*,            contentView),
     obj(void,               deminiaturize,_app_objc_id),
     obj(void,               disableSnapshotRestoration),
-    obj(NSRect,             frame),
-    obj(NSRect,             frameRectForContentRect,NSRect),
-    obj(NSGraphicsContext*, graphicsContext),
+    obj(_app_NSRect,             frame),
+    obj(_app_NSRect,             frameRectForContentRect,_app_NSRect),
+    obj(_app_NSGraphicsContext*, graphicsContext),
     obj(bool,               isDocumentEdited),
     obj(bool,               isKeyWindow),
     obj(bool,               isMainWindow),
@@ -332,25 +294,25 @@ _app_objc_interface(
     obj(bool,               isRestorable),
     obj(bool,               isVisible),
     obj(bool,               isZoomed),
-    obj(void,               keyDown,NSEvent*),
+    obj(void,               keyDown,_app_NSEvent*),
     obj(void,               makeKeyAndOrderFront,_app_objc_id),
     obj(void,               makeMainWindow),
     obj(void,               orderFront,_app_objc_id),
     obj(void,               miniaturize,_app_objc_id),
     obj(void,               setAcceptsMouseMovedEvents,bool),
     obj(void,               setCollectionBehavior,size_t),
-    obj(void,               setContentView,NSView*),
+    obj(void,               setContentView,_app_NSView*),
     obj(void,               setDelegate,_app_objc_id),
     obj(void,               setDocumentEdited,bool),
-    obj(void,               setFrame,NSRect, display,bool),
+    obj(void,               setFrame,_app_NSRect, display,bool),
     obj(void,               setRestorable,bool),
     obj(void,               setRestorationClass,_app_objc_class*),
     obj(void,               setIsVisible,bool),
     obj(void,               setReleasedWhenClosed,bool),
-    obj(void,               setStyleMask,NSWindowStyleMask),
-    obj(void,               setTitle,NSString*),
+    obj(void,               setStyleMask,_app_NSWindowStyleMask),
+    obj(void,               setTitle,_app_NSString*),
     obj(void,               setTitlebarAppearsTransparent,bool),
-    obj(NSWindowStyleMask,  styleMask),
+    obj(_app_NSWindowStyleMask,  styleMask),
     obj(bool,               titlebarAppearsTransparent),
     obj(void,               zoom,_app_objc_id),
 )

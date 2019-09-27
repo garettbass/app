@@ -59,10 +59,12 @@
         assert(ALIAS);\
         /**/
 
-#define __app_objc_symbol_initializer_pointer(TYPE, NAME)\
-        assert(NAME == NULL);\
-        NAME = (TYPE)*(void**)dlsym(framework, #NAME);\
-        assert(NAME);\
-        /**/
+#define __app_objc_symbol_initializer_pointer(TYPE, NAME) {\
+            assert(NAME == NULL);\
+            const char* sym = #NAME;\
+            if (strstr(sym,"_app_") == sym) { sym += strlen("_app_"); }\
+            NAME = (TYPE)*(void**)dlsym(framework, sym);\
+            assert(NAME);\
+        }/**/
 
 #define __app_objc_symbol_initializer_

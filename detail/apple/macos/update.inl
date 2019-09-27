@@ -8,73 +8,73 @@ APP_EXTERN_C_BEGIN
 //------------------------------------------------------------------------------
 
 static inline void
-_app_log_event(NSEventType const eventType) {
+_app_log_event(_app_NSEventType const eventType) {
     switch (eventType) {
         #define _app_log_event(EVENT) case EVENT: puts(#EVENT); break;
-        _app_log_event(NSEventTypeLeftMouseDown)
-        _app_log_event(NSEventTypeLeftMouseUp)
-        _app_log_event(NSEventTypeRightMouseDown)
-        _app_log_event(NSEventTypeRightMouseUp)
-        _app_log_event(NSEventTypeMouseMoved)
-        _app_log_event(NSEventTypeLeftMouseDragged)
-        _app_log_event(NSEventTypeRightMouseDragged)
-        _app_log_event(NSEventTypeMouseEntered)
-        _app_log_event(NSEventTypeMouseExited)
-        _app_log_event(NSEventTypeKeyDown)
-        _app_log_event(NSEventTypeKeyUp)
-        _app_log_event(NSEventTypeFlagsChanged)
-        _app_log_event(NSEventTypeAppKitDefined)
-        _app_log_event(NSEventTypeSystemDefined)
-        _app_log_event(NSEventTypeApplicationDefined)
-        _app_log_event(NSEventTypePeriodic)
-        _app_log_event(NSEventTypeCursorUpdate)
-        _app_log_event(NSEventTypeScrollWheel)
-        _app_log_event(NSEventTypeTabletPoint)
-        _app_log_event(NSEventTypeTabletProximity)
-        _app_log_event(NSEventTypeOtherMouseDown)
-        _app_log_event(NSEventTypeOtherMouseUp)
-        _app_log_event(NSEventTypeOtherMouseDragged)
-        _app_log_event(NSEventTypeGesture)
-        _app_log_event(NSEventTypeMagnify)
-        _app_log_event(NSEventTypeSwipe)
-        _app_log_event(NSEventTypeRotate)
-        _app_log_event(NSEventTypeBeginGesture)
-        _app_log_event(NSEventTypeEndGesture)
-        _app_log_event(NSEventTypeSmartMagnify)
-        _app_log_event(NSEventTypeQuickLook)
-        _app_log_event(NSEventTypePressure)
-        _app_log_event(NSEventTypeDirectTouch)
+        _app_log_event(_app_NSEventTypeLeftMouseDown)
+        _app_log_event(_app_NSEventTypeLeftMouseUp)
+        _app_log_event(_app_NSEventTypeRightMouseDown)
+        _app_log_event(_app_NSEventTypeRightMouseUp)
+        _app_log_event(_app_NSEventTypeMouseMoved)
+        _app_log_event(_app_NSEventTypeLeftMouseDragged)
+        _app_log_event(_app_NSEventTypeRightMouseDragged)
+        _app_log_event(_app_NSEventTypeMouseEntered)
+        _app_log_event(_app_NSEventTypeMouseExited)
+        _app_log_event(_app_NSEventTypeKeyDown)
+        _app_log_event(_app_NSEventTypeKeyUp)
+        _app_log_event(_app_NSEventTypeFlagsChanged)
+        _app_log_event(_app_NSEventTypeAppKitDefined)
+        _app_log_event(_app_NSEventTypeSystemDefined)
+        _app_log_event(_app_NSEventTypeApplicationDefined)
+        _app_log_event(_app_NSEventTypePeriodic)
+        _app_log_event(_app_NSEventTypeCursorUpdate)
+        _app_log_event(_app_NSEventTypeScrollWheel)
+        _app_log_event(_app_NSEventTypeTabletPoint)
+        _app_log_event(_app_NSEventTypeTabletProximity)
+        _app_log_event(_app_NSEventTypeOtherMouseDown)
+        _app_log_event(_app_NSEventTypeOtherMouseUp)
+        _app_log_event(_app_NSEventTypeOtherMouseDragged)
+        _app_log_event(_app_NSEventTypeGesture)
+        _app_log_event(_app_NSEventTypeMagnify)
+        _app_log_event(_app_NSEventTypeSwipe)
+        _app_log_event(_app_NSEventTypeRotate)
+        _app_log_event(_app_NSEventTypeBeginGesture)
+        _app_log_event(_app_NSEventTypeEndGesture)
+        _app_log_event(_app_NSEventTypeSmartMagnify)
+        _app_log_event(_app_NSEventTypeQuickLook)
+        _app_log_event(_app_NSEventTypePressure)
+        _app_log_event(_app_NSEventTypeDirectTouch)
         #undef _app_log_event
-        default: printf("(NSEventType)%u", eventType); break;
+        default: printf("(_app_NSEventType)%u", eventType); break;
     }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-static NSDate* _app_update_timeout = NULL;
+static _app_NSDate* _app_update_timeout = NULL;
 
 app_static_initializer(_app_update_timeout_initializer) {
     assert(_app_update_timeout == NULL);
-    _app_update_timeout = _app_objc_cls(NSDate,date);
+    _app_update_timeout = _app_objc_cls(_app_NSDate,date);
 }
 
-static inline NSDate*
-_app_updateGetNextTimeout(const NSTimeInterval interval) {
+static inline _app_NSDate*
+_app_updateGetNextTimeout(const _app_NSTimeInterval interval) {
     assert(_app_update_timeout);
-    NSDate* const oldUpdateTimeout = _app_update_timeout;
+    _app_NSDate* const oldUpdateTimeout = _app_update_timeout;
     _app_update_timeout =
-        _app_objc_cls(NSDate,
+        _app_objc_cls(_app_NSDate,
             dateWithTimeInterval,interval,
             sinceDate,oldUpdateTimeout);
-    _app_objc_obj(oldUpdateTimeout,NSDate,release);
-    return _app_objc_obj(_app_update_timeout,NSDate,retain);
+    _app_objc_obj(oldUpdateTimeout,_app_NSDate,release);
+    return _app_objc_obj(_app_update_timeout,_app_NSDate,retain);
 }
 
 #pragma GCC poison _app_update_timeout
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-static NSTimeInterval _app_update_interval = 0;
+static _app_NSTimeInterval _app_update_interval = 0;
 
 app_static_initializer(_app_update_interval_initializer) {
     assert(_app_update_interval == 0);
@@ -88,48 +88,49 @@ app_static_initializer(_app_update_interval_initializer) {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-_app_objc_import(CoreFoundation, pointer(NSString*,NSDefaultRunLoopMode))
+_app_objc_import(CoreFoundation, pointer(_app_NSString*,_app_NSDefaultRunLoopMode))
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 static inline bool
-_app_update_process_event(NSDate* const timeout) {
-    NSEvent* const event =
-        _app_objc_obj(NSApp,NSApplication,
-            nextEventMatchingMask,NSEventMaskAny,
+_app_update_process_event(_app_NSDate* const timeout) {
+    enum { _app_NSEventMaskAny = ~0u };
+    _app_NSEvent* const event =
+        _app_objc_obj(_app_NSApp,_app_NSApplication,
+            nextEventMatchingMask,_app_NSEventMaskAny,
             untilDate,timeout,
-            inMode,NSDefaultRunLoopMode,
+            inMode,_app_NSDefaultRunLoopMode,
             dequeue,true);
     if (event == NULL)
         return false;
 
-    _app_objc_obj(NSApp,NSApplication,sendEvent,event);
-    _app_objc_obj(NSApp,NSApplication,updateWindows);
+    _app_objc_obj(_app_NSApp,_app_NSApplication,sendEvent,event);
+    _app_objc_obj(_app_NSApp,_app_NSApplication,updateWindows);
 
-    const NSEventType eventType = _app_objc_obj(event,NSEvent,type);
+    const _app_NSEventType eventType = _app_objc_obj(event,_app_NSEvent,type);
     // _app_log_event(eventType);
 
     switch (eventType) {
 
-        case NSEventTypeKeyDown: {
-            NSString* const characters = _app_objc_obj(event,NSEvent,characters);
+        case _app_NSEventTypeKeyDown: {
+            _app_NSString* const characters = _app_objc_obj(event,_app_NSEvent,characters);
             if (characters) {
-                const char* const text = _app_objc_obj(characters,NSString,UTF8String);
+                const char* const text = _app_objc_obj(characters,_app_NSString,UTF8String);
                 _app_text_input_append_string(text);
             }
         } break;
 
-        case NSEventTypeKeyUp:
-        case NSEventTypeFlagsChanged:
+        case _app_NSEventTypeKeyUp:
+        case _app_NSEventTypeFlagsChanged:
             break;
 
-        case NSEventTypeLeftMouseUp:
-        case NSEventTypeLeftMouseDown:
-        case NSEventTypeRightMouseUp:
-        case NSEventTypeRightMouseDown:
-        case NSEventTypeOtherMouseUp:
-        case NSEventTypeOtherMouseDown: {
-            const NSInteger buttonNumber = _app_objc_obj(event,NSEvent,buttonNumber);
+        case _app_NSEventTypeLeftMouseUp:
+        case _app_NSEventTypeLeftMouseDown:
+        case _app_NSEventTypeRightMouseUp:
+        case _app_NSEventTypeRightMouseDown:
+        case _app_NSEventTypeOtherMouseUp:
+        case _app_NSEventTypeOtherMouseDown: {
+            const _app_NSInteger buttonNumber = _app_objc_obj(event,_app_NSEvent,buttonNumber);
             const app_key appKey = (app_key)(APP_KEY_MOUSE_1 + buttonNumber);
             if (appKey >= APP_KEY_MOUSE_1 and appKey <= APP_KEY_MOUSE_10) {
                 const bool isDown = eventType & 0x1;
@@ -137,42 +138,42 @@ _app_update_process_event(NSDate* const timeout) {
             }
         } break;
 
-        case NSEventTypeMouseMoved:
-        case NSEventTypeLeftMouseDragged:
-        case NSEventTypeRightMouseDragged:
-        case NSEventTypeOtherMouseDragged: {
-            const CGFloat dx = _app_objc_obj(event,NSEvent,deltaX);
-            const CGFloat dy = _app_objc_obj(event,NSEvent,deltaY);
+        case _app_NSEventTypeMouseMoved:
+        case _app_NSEventTypeLeftMouseDragged:
+        case _app_NSEventTypeRightMouseDragged:
+        case _app_NSEventTypeOtherMouseDragged: {
+            const CGFloat dx = _app_objc_obj(event,_app_NSEvent,deltaX);
+            const CGFloat dy = _app_objc_obj(event,_app_NSEvent,deltaY);
             _app_mouse_delta.x += (float)dx;
             _app_mouse_delta.y += (float)dy;
         } break;
 
-        case NSEventTypeScrollWheel: {
-            const CGFloat dx = _app_objc_obj(event,NSEvent,scrollingDeltaX);
-            const CGFloat dy = _app_objc_obj(event,NSEvent,scrollingDeltaY);
+        case _app_NSEventTypeScrollWheel: {
+            const CGFloat dx = _app_objc_obj(event,_app_NSEvent,scrollingDeltaX);
+            const CGFloat dy = _app_objc_obj(event,_app_NSEvent,scrollingDeltaY);
             _app_mouse_scroll.x += (float)dx;
             _app_mouse_scroll.y += (float)dy;
         } break;
 
-        case NSEventTypeMouseEntered:
-        case NSEventTypeMouseExited:
-        case NSEventTypeAppKitDefined:
-        case NSEventTypeApplicationDefined:
-        case NSEventTypeBeginGesture:
-        case NSEventTypeEndGesture:
-        case NSEventTypeCursorUpdate:
-        case NSEventTypeDirectTouch:
-        case NSEventTypeGesture:
-        case NSEventTypeMagnify:
-        case NSEventTypePeriodic:
-        case NSEventTypePressure:
-        case NSEventTypeQuickLook:
-        case NSEventTypeRotate:
-        case NSEventTypeSmartMagnify:
-        case NSEventTypeSwipe:
-        case NSEventTypeSystemDefined:
-        case NSEventTypeTabletPoint:
-        case NSEventTypeTabletProximity:
+        case _app_NSEventTypeMouseEntered:
+        case _app_NSEventTypeMouseExited:
+        case _app_NSEventTypeAppKitDefined:
+        case _app_NSEventTypeApplicationDefined:
+        case _app_NSEventTypeBeginGesture:
+        case _app_NSEventTypeEndGesture:
+        case _app_NSEventTypeCursorUpdate:
+        case _app_NSEventTypeDirectTouch:
+        case _app_NSEventTypeGesture:
+        case _app_NSEventTypeMagnify:
+        case _app_NSEventTypePeriodic:
+        case _app_NSEventTypePressure:
+        case _app_NSEventTypeQuickLook:
+        case _app_NSEventTypeRotate:
+        case _app_NSEventTypeSmartMagnify:
+        case _app_NSEventTypeSwipe:
+        case _app_NSEventTypeSystemDefined:
+        case _app_NSEventTypeTabletPoint:
+        case _app_NSEventTypeTabletProximity:
             break;
 
     }
@@ -189,7 +190,7 @@ app_update(void) {
     _app_mouse_delta_reset();
     _app_mouse_scroll_reset();
     _app_autoreleasepool_popPush();
-    NSDate* const timeout = _app_updateGetNextTimeout(_app_update_interval);
+    _app_NSDate* const timeout = _app_updateGetNextTimeout(_app_update_interval);
     while (_app_update_process_event(timeout)) {
         _app_autoreleasepool_popPush();
     }
@@ -208,11 +209,11 @@ void app_quit(void) {
     puts(__func__);
     _app_quit_requested = true;
 
-    // NSArray* windows = _app_objc_autorelease(_app_objc_obj(NSApp,NSApplication,windows));
-    // const int n = _app_objc_obj(windows,NSArray,count);
+    // _app_NSArray* windows = _app_objc_autorelease(_app_objc_obj(_app_NSApp,_app_NSApplication,windows));
+    // const int n = _app_objc_obj(windows,_app_NSArray,count);
     // for (int i = 0; i < n; ++i) {
-    //     NSWindow* window = _app_objc_obj(windows,NSArray,objectAtIndex,i);
-    //     _app_objc_obj(window,NSWindow,close);
+    //     _app_NSWindow* window = _app_objc_obj(windows,_app_NSArray,objectAtIndex,i);
+    //     _app_objc_obj(window,_app_NSWindow,close);
     // }
 }
 

@@ -35,9 +35,21 @@ typedef struct app_rect {
 
 typedef struct app_window app_window;
 
+typedef struct app_parameters {
+    int argc; const char **argv, **envp;
+} app_parameters;
+
 //------------------------------------------------------------------------------
 
 APP_EXTERN_C_BEGIN
+
+//------------------------------------------------------------------------------
+
+extern int
+app_main(void);
+
+app_parameters
+app_get_parameters(void);
 
 //------------------------------------------------------------------------------
 

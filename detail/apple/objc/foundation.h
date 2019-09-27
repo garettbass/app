@@ -3,81 +3,81 @@
 
 //------------------------------------------------------------------------------
 
-_app_objc_class(NSArray);
-_app_objc_class(NSAutoreleasePool);
-_app_objc_class(NSBundle);
-_app_objc_class(NSData);
-_app_objc_class(NSDictionary);
-_app_objc_class(NSError);
-_app_objc_class(NSMutableArray);
-_app_objc_class(NSNotification);
-_app_objc_class(NSString);
+_app_objc_class(_app_NSArray);
+_app_objc_class(_app_NSAutoreleasePool);
+_app_objc_class(_app_NSBundle);
+_app_objc_class(_app_NSData);
+_app_objc_class(_app_NSDictionary);
+_app_objc_class(_app_NSError);
+_app_objc_class(_app_NSMutableArray);
+_app_objc_class(_app_NSNotification);
+_app_objc_class(_app_NSString);
 
 //------------------------------------------------------------------------------
 
 #if defined(__LP64__) && __LP64__
     typedef double        CGFloat;
-    typedef unsigned long NSUInteger;
-    typedef signed long   NSInteger;
+    typedef unsigned long _app_NSUInteger;
+    typedef signed long   _app_NSInteger;
 #else
     typedef float         CGFloat;
-    typedef unsigned int  NSUInteger;
-    typedef signed int    NSInteger;
+    typedef unsigned int  _app_NSUInteger;
+    typedef signed int    _app_NSInteger;
 #endif
 
-typedef double NSTimeInterval;
+typedef double _app_NSTimeInterval;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 typedef struct CGPoint {
     CGFloat x;
     CGFloat y;
-} CGPoint, NSPoint;
+} CGPoint, _app_NSPoint;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 typedef struct CGSize {
     CGFloat width;
     CGFloat height;
-} CGSize, NSSize;
+} CGSize, _app_NSSize;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 typedef struct CGRect  {
     CGPoint origin;
     CGSize size;
-} CGRect, NSRect;
+} CGRect, _app_NSRect;
 
 APP_EXTERN_C_BEGIN
-static inline NSRect
-NSMakeRect(CGFloat x, CGFloat y, CGFloat w, CGFloat h) {
-    NSRect result = { {x,y}, {w,h} };
+static inline _app_NSRect
+_app_NSMakeRect(CGFloat x, CGFloat y, CGFloat w, CGFloat h) {
+    _app_NSRect result = { {x,y}, {w,h} };
     return result;
 }
 APP_EXTERN_C_END
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-typedef struct NSRange {
-    NSUInteger location;
-    NSUInteger length;
-} NSRange;
+typedef struct _app_NSRange {
+    _app_NSUInteger location;
+    _app_NSUInteger length;
+} _app_NSRange;
 
 //------------------------------------------------------------------------------
 
 _app_objc_interface(
-    NSArray,
-    obj(NSUInteger, count),
+    _app_NSArray,
+    obj(_app_NSUInteger, count),
     obj(_app_objc_id,         firstObject),
     obj(_app_objc_id,         lastObject),
-    obj(_app_objc_id,         objectAtIndex,NSUInteger),
-    obj(NSUInteger, indexOfObject,_app_objc_id),
+    obj(_app_objc_id,         objectAtIndex,_app_NSUInteger),
+    obj(_app_NSUInteger, indexOfObject,_app_objc_id),
 )
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 _app_objc_interface(
-    NSAutoreleasePool,
+    _app_NSAutoreleasePool,
     cls(void, showPools),
     obj(void, drain),
 )
@@ -85,99 +85,99 @@ _app_objc_interface(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 _app_objc_interface(
-    NSBundle,
-    cls(NSBundle*,  mainBundle),
-    obj(NSString*,  bundleIdentifier),
-    obj(NSString*,  bundlePath),
+    _app_NSBundle,
+    cls(_app_NSBundle*,  mainBundle),
+    obj(_app_NSString*,  bundleIdentifier),
+    obj(_app_NSString*,  bundlePath),
 )
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 _app_objc_interface(
-    NSData,
+    _app_NSData,
     obj(const void*, bytes),
 )
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 _app_objc_interface(
-    NSDictionary,
-    cls(NSDictionary*,
+    _app_NSDictionary,
+    cls(_app_NSDictionary*,
         dictionaryWithObjects,_app_objc_id*, 
-        forKeys,NSString*,
-        count,NSUInteger),
-    obj(NSUInteger, count),
-    obj(_app_objc_id,valueForKey,NSString*),
+        forKeys,_app_NSString*,
+        count,_app_NSUInteger),
+    obj(_app_NSUInteger, count),
+    obj(_app_objc_id,valueForKey,_app_NSString*),
 )
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 _app_objc_interface(
-    NSCoder,
-    obj(bool,           containsValueForKey,NSString*),
+    _app_NSCoder,
+    obj(bool,           containsValueForKey,_app_NSString*),
 
-    obj(_app_objc_id,             decodeObjectForKey,NSString*),
-    obj(bool,           decodeBoolForKey,NSString*),
-    obj(int,            decodeIntForKey,NSString*),
-    obj(int32_t,        decodeInt32ForKey,NSString*),
-    obj(int64_t,        decodeInt64ForKey,NSString*),
-    obj(NSInteger,      decodeIntegerForKey,NSString*),
-    obj(float,          decodeFloatForKey,NSString*),
-    obj(double,         decodeDoubleForKey,NSString*),
-    obj(const char*,    decodeBytesForKey,NSString*,returnedLength,NSUInteger*),
+    obj(_app_objc_id,             decodeObjectForKey,_app_NSString*),
+    obj(bool,           decodeBoolForKey,_app_NSString*),
+    obj(int,            decodeIntForKey,_app_NSString*),
+    obj(int32_t,        decodeInt32ForKey,_app_NSString*),
+    obj(int64_t,        decodeInt64ForKey,_app_NSString*),
+    obj(_app_NSInteger,      decodeIntegerForKey,_app_NSString*),
+    obj(float,          decodeFloatForKey,_app_NSString*),
+    obj(double,         decodeDoubleForKey,_app_NSString*),
+    obj(const char*,    decodeBytesForKey,_app_NSString*,returnedLength,_app_NSUInteger*),
 
-    obj(void,           encodeObject,_app_objc_id,forKey,NSString*),
-    obj(void,           encodeBool,bool,forKey,NSString*),
-    obj(void,           encodeInt,int,forKey,NSString*),
-    obj(void,           encodeInt32,int32_t,forKey,NSString*),
-    obj(void,           encodeInt64,int64_t,forKey,NSString*),
-    obj(void,           encodeInteger,NSInteger,forKey,NSString*),
-    obj(void,           encodeFloat,float,forKey,NSString*),
-    obj(void,           encodeDouble,double,forKey,NSString*),
-    obj(void,           encodeBytes,const char*,length,NSUInteger),
+    obj(void,           encodeObject,_app_objc_id,forKey,_app_NSString*),
+    obj(void,           encodeBool,bool,forKey,_app_NSString*),
+    obj(void,           encodeInt,int,forKey,_app_NSString*),
+    obj(void,           encodeInt32,int32_t,forKey,_app_NSString*),
+    obj(void,           encodeInt64,int64_t,forKey,_app_NSString*),
+    obj(void,           encodeInteger,_app_NSInteger,forKey,_app_NSString*),
+    obj(void,           encodeFloat,float,forKey,_app_NSString*),
+    obj(void,           encodeDouble,double,forKey,_app_NSString*),
+    obj(void,           encodeBytes,const char*,length,_app_NSUInteger),
 )
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 _app_objc_interface(
-    NSError,
-    obj(NSUInteger, code),
-    obj(NSString*,  domain),
-    obj(NSString*,  localizedDescription),
-    obj(NSString*,  localizedRecoveryOptions),
-    obj(NSString*,  localizedRecoverySuggestion),
-    obj(NSString*,  localizedFailureReason),
+    _app_NSError,
+    obj(_app_NSUInteger, code),
+    obj(_app_NSString*,  domain),
+    obj(_app_NSString*,  localizedDescription),
+    obj(_app_NSString*,  localizedRecoveryOptions),
+    obj(_app_NSString*,  localizedRecoverySuggestion),
+    obj(_app_NSString*,  localizedFailureReason),
 )
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 _app_objc_interface(
-    NSMutableArray,
-    cls(NSMutableArray*, arrayWithCapacity,NSUInteger),
+    _app_NSMutableArray,
+    cls(_app_NSMutableArray*, arrayWithCapacity,_app_NSUInteger),
     obj(void, addObject,_app_objc_id),
-    obj(void, insertObject,_app_objc_id,atIndex,NSUInteger),
-    obj(void, removeObjectAtIndex,NSUInteger),
+    obj(void, insertObject,_app_objc_id,atIndex,_app_NSUInteger),
+    obj(void, removeObjectAtIndex,_app_NSUInteger),
     obj(void, removeLastObject),
-    obj(void, replaceObjectAtIndex,NSUInteger,withObject,_app_objc_id)
+    obj(void, replaceObjectAtIndex,_app_NSUInteger,withObject,_app_objc_id)
 )
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 _app_objc_interface(
-    NSNotification,
-    obj(NSString*, name),
+    _app_NSNotification,
+    obj(_app_NSString*, name),
 )
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 _app_objc_interface(
-    NSString,
-    cls(NSString*,   stringWithUTF8String,const char*),
+    _app_NSString,
+    cls(_app_NSString*,   stringWithUTF8String,const char*),
     obj(const char*, UTF8String),
 )
 
-#define _app_objc_str(CSTR) (_app_objc_cls(NSString,stringWithUTF8String,CSTR))
+#define _app_objc_str(CSTR) (_app_objc_cls(_app_NSString,stringWithUTF8String,CSTR))
 
-#define _app_objc_cstr(NSSTR) (_app_objc_obj(NSSTR,NSString,UTF8String))
+#define _app_objc_cstr(_app_NSSTR) (_app_objc_obj(_app_NSSTR,_app_NSString,UTF8String))
 
 //------------------------------------------------------------------------------

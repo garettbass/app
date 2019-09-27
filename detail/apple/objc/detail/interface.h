@@ -31,8 +31,9 @@
 
         APP_EXTERN_C_BEGIN
         static inline void
-        __app_objc_interface_initializer(_app_objc_class** pcls, const char name[]) {
+        __app_objc_interface_initializer(_app_objc_class** pcls, const char* name) {
             assert(*pcls == NULL);
+            if (strstr(name, "_app_") == name) { name += strlen("_app_"); }
             *pcls = objc_getClass(name);
         }
         APP_EXTERN_C_END

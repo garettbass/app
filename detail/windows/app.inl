@@ -1,8 +1,4 @@
 #pragma once
-#pragma comment(linker, "/subsystem:windows")
-#pragma comment(lib, "kernel32.lib")
-#pragma comment(lib, "user32.lib")
-#pragma comment(lib, "gdi32.lib")
 #include "../app.inl"
 #include <stdio.h>
 #include <stdlib.h>
@@ -50,6 +46,15 @@ APP_EXTERN_C_BEGIN
 
 //------------------------------------------------------------------------------
 
+app_parameters _app_parameters;
+
+app_parameters
+app_get_parameters(void) {
+    return _app_parameters;
+}
+
+//------------------------------------------------------------------------------
+
 void
 app_activate(void) {
     _app_SetForegroundWindow(_app_GetActiveWindow());
@@ -74,14 +79,20 @@ _app_alloc_envp(const char* const envs) {
 
 //------------------------------------------------------------------------------
 
-extern int app_main(int, const char*[], const char*[]);
+#if APP_COMPILER_MICROSOFT
+#pragma comment(linker, "/subsystem:windows")
+#endif
 
 #ifdef WINAPI
 int __stdcall WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 #else
-int __stdcall WinMain(void* Instance, void* Previous, char* CmdLine, int nShowCmd)
+int __stdcall WinMain(void* hInstance, void* hPrevInstance, char* lpCmdLine, int nShowCmd)
 #endif
 {
+    (void)hInstance;
+    (void)hPrevInstance;
+    (void)lpCmdLine;
+    (void)nShowCmd;
     app_dll* const shcore = app_dll_acquire("shcore.dll");
     if (shcore) {
         typedef unsigned (__stdcall * set_process_dpi_awareness_t)(unsigned);
@@ -126,7 +137,8 @@ int __stdcall WinMain(void* Instance, void* Previous, char* CmdLine, int nShowCm
     const char*  const envs = _app_GetEnvironmentStringsA();
     const char** const envp = _app_alloc_envp(envs);
 
-    const int result = app_main(argc, argv, envp);
+    _app_parameters = (app_parameters){ argc, argv, envp };
+    const int result = app_main();
 
     free(envp);
     _app_FreeEnvironmentStringsA(envs);

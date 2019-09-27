@@ -226,7 +226,7 @@ app_key_parse(const char* keyName) {
 
 app_static_initializer(_app_key_string_test) {
     for (unsigned key = 0; key < app_keyCount; ++key) {
-        assert(key == app_key_parse(app_key_name((app_key)key)));
+        assert(key == (unsigned)app_key_parse(app_key_name((app_key)key)));
     }
 }
 
@@ -236,12 +236,12 @@ static struct _app_text_input {
     uint8_t length;
     char    begin[62];
     char    end[1];
-} _app_text_input = {0};
+} _app_text_input = {0,{0},{0}};
 static_assert(sizeof(_app_text_input) == 64, "?");
 
 static inline void
 _app_text_input_reset(void) {
-    _app_text_input = (struct _app_text_input){0};
+    _app_text_input = (struct _app_text_input){0,{0},{0}};
     assert(_app_text_input.length   == 0);
     assert(_app_text_input.begin[0] == 0);
     assert(_app_text_input.end[0]   == 0);

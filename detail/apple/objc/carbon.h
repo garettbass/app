@@ -3,7 +3,7 @@
 
 //------------------------------------------------------------------------------
 
-_app_objc_framework(Carbon)
+_app_objc_framework(_app_Carbon, "Carbon.framework/Carbon")
 
 //------------------------------------------------------------------------------
 
@@ -169,7 +169,7 @@ typedef unsigned HIKeyMap[4];
 //------------------------------------------------------------------------------
 
 _app_objc_import(
-    Carbon,
+    _app_Carbon,
     function(CGPoint*, HIGetMousePosition,(
         HICoordinateSpace   inSpace,
         void *              inObject,

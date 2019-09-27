@@ -10,10 +10,10 @@ typedef struct CFRange { CFIndex location, length; } CFRange;
 //------------------------------------------------------------------------------
 
 typedef struct CFAllocator        CFAllocator;
-typedef struct NSArray            CFArray;
-typedef struct NSDictionary       CFDictionary;
-typedef struct NSString           CFString;
-typedef struct NSAttributedString CFAttributedString;
+typedef struct _app_NSArray            CFArray;
+typedef struct _app_NSDictionary       CFDictionary;
+typedef struct _app_NSString           CFString;
+typedef struct _app_NSAttributedString CFAttributedString;
 
 typedef enum CFStringBuiltInEncodings {
    kCFStringEncodingMacRoman      = 0,

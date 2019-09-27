@@ -97,7 +97,7 @@ app_window_acquire(void) {
             const char* lpszMenuName;
             const char* lpszClassName;
             void*       hIconSm;
-        } wndClassExA = {0};
+        } wndClassExA;
         wndClassExA.cbSize        = sizeof(wndClassExA);
         wndClassExA.style         = _APP_CS_HREDRAW | _APP_CS_VREDRAW | _APP_CS_OWNDC;
         wndClassExA.lpfnWndProc   = (void*)_app_wndproc;
@@ -109,6 +109,7 @@ app_window_acquire(void) {
         wndClassExA.hbrBackground = (void*)(size_t)(_APP_CLR_WINDOW + 1);
         wndClassExA.lpszMenuName  = NULL;
         wndClassExA.lpszClassName = "app_window";
+        wndClassExA.hIconSm       = _app_LoadIconA(NULL, (const char*)(size_t)_APP_IDI_APPLICATION);
         wndClassAtom = _app_RegisterClassExA(&wndClassExA);
     }
 
@@ -137,7 +138,7 @@ app_window_acquire(void) {
     const unsigned exstyle = _APP_WS_EX_APPWINDOW; // show in taskbar
 
     typedef struct RECT { int left, top, right, bottom; } RECT;
-    const RECT origin = {0};
+    const RECT origin = {0,0,0,0};
     enum { _APP_MONITOR_DEFAULTTOPRIMARY = 1 };
     void* const hmon = _app_MonitorFromRect(&origin, _APP_MONITOR_DEFAULTTOPRIMARY);
     struct {
@@ -145,7 +146,7 @@ app_window_acquire(void) {
         RECT     rcMonitor;
         RECT     rcWork;
         unsigned dwFlags;
-    } mi = {sizeof(mi)};
+    } mi = {sizeof(mi),{0,0,0,0},{0,0,0,0},0};
     _app_GetMonitorInfoA(hmon, &mi);
 
     const RECT desktop   = mi.rcWork;
@@ -255,7 +256,7 @@ app_window_set_frame(app_window* const window, app_rect frame) {
         POINT    rcMinPosition;
         POINT    rcMaxPosition;
         RECT     rcNormalPosition;
-    } wpl = {sizeof(wpl)};
+    } wpl = {sizeof(wpl),0,0,{0,0},{0,0},{0,0,0,0}};
     _app_GetWindowPlacement(window, &wpl);
     wpl.rcNormalPosition.left = (int)frame.x;
     wpl.rcNormalPosition.top = (int)frame.y;
@@ -294,7 +295,7 @@ app_window_set_viewport(app_window* const window, app_rect viewport) {
         POINT    rcMinPosition;
         POINT    rcMaxPosition;
         RECT     rcNormalPosition;
-    } wpl = {sizeof(wpl)};
+    } wpl = {sizeof(wpl),0,0,{0,0},{0,0},{0,0,0,0}};
     _app_GetWindowPlacement(window, &wpl);
     wpl.rcNormalPosition.left = (int)viewport.x;
     wpl.rcNormalPosition.top = (int)viewport.y;
@@ -360,6 +361,7 @@ void
 app_window_set_fullscreen(app_window* window, bool fullscreen) {
     assert(window);
     assert(false);
+    (void)fullscreen;
 }
 
 //------------------------------------------------------------------------------

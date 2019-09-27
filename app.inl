@@ -1,5 +1,5 @@
 #pragma once
-#include "detail/platform.h"
+#include "detail/app.inl"
 
 //------------------------------------------------------------------------------
 
@@ -12,17 +12,6 @@
 
 //------------------------------------------------------------------------------
 
-#include "detail/app.inl"
-#if APP_OS_IOS
-#include "detail/apple/ios/app.inl"
-#elif APP_OS_MACOS
-#include "detail/apple/macos/app.inl"
-#elif APP_OS_WINDOWS
-#include "detail/windows/app.inl"
-#endif
-
-//------------------------------------------------------------------------------
-
 #if APP_DEBUG
     APP_EXTERN_C_BEGIN
     app_static_initializer(app_build) {
@@ -31,9 +20,5 @@
     }
     APP_EXTERN_C_END
 #endif
-
-//------------------------------------------------------------------------------
-
-#define main app_main
 
 //------------------------------------------------------------------------------

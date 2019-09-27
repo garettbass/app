@@ -14,10 +14,10 @@ _app_cursor_set_hidden(bool hidden) {
     if (_app_cursor_is_hidden != hidden) {
         _app_cursor_is_hidden = hidden;
         if (hidden) {
-            _app_objc_cls(NSCursor,hide);
+            _app_objc_cls(_app_NSCursor,hide);
             puts("hide cursor");
         } else {
-            _app_objc_cls(NSCursor,unhide);
+            _app_objc_cls(_app_NSCursor,unhide);
             puts("show cursor");
         }
     }
@@ -57,9 +57,9 @@ app_cursor_set_position(app_point position, app_window* /*optional*/ window) {
 
 //------------------------------------------------------------------------------
 
-static NSCursor* const _APP_NSCURSOR_NONE = (NSCursor*)0x1;
+static _app_NSCursor* const _APP_NSCURSOR_NONE = (_app_NSCursor*)0x1;
 
-static NSCursor* _app_nscursor;
+static _app_NSCursor* _app_nscursor;
 
 static inline void
 _app_nscursor_pop(void) {
@@ -67,27 +67,27 @@ _app_nscursor_pop(void) {
         if (_app_nscursor == _APP_NSCURSOR_NONE) {
             _app_cursor_set_hidden(false);
         } else {
-            _app_objc_obj(_app_nscursor,NSCursor,pop);
+            _app_objc_obj(_app_nscursor,_app_NSCursor,pop);
         }
         _app_nscursor = NULL;
     }
 }
 
 static inline void
-_app_nscursor_push(NSCursor* nsCursor) {
-    if (_app_nscursor != nsCursor) {
+_app_nscursor_push(_app_NSCursor* cursor) {
+    if (_app_nscursor != cursor) {
         _app_nscursor_pop();
-        _app_nscursor = nsCursor;
+        _app_nscursor = cursor;
         if (_app_nscursor == _APP_NSCURSOR_NONE) {
             _app_cursor_set_hidden(true);
         } else {
-            _app_objc_obj(_app_nscursor,NSCursor,push);
+            _app_objc_obj(_app_nscursor,_app_NSCursor,push);
             _app_cursor_set_hidden(false);
         }
     }
 }
 
-static inline NSCursor*
+static inline _app_NSCursor*
 _app_nscursor_get(app_cursor cursor) {
     switch (cursor) {
         case APP_CURSOR_NONE:
@@ -95,17 +95,17 @@ _app_nscursor_get(app_cursor cursor) {
         default:
         case APP_CURSOR_DEFAULT:
         case APP_CURSOR_ARROW:
-            return _app_objc_cls(NSCursor,arrowCursor);
+            return _app_objc_cls(_app_NSCursor,arrowCursor);
         case APP_CURSOR_CROSSHAIR:
-            return _app_objc_cls(NSCursor,crosshairCursor);
+            return _app_objc_cls(_app_NSCursor,crosshairCursor);
         case APP_CURSOR_TEXT:
-            return _app_objc_cls(NSCursor,IBeamCursor);
+            return _app_objc_cls(_app_NSCursor,IBeamCursor);
         case APP_CURSOR_LINK:
-            return _app_objc_cls(NSCursor,pointingHandCursor);
+            return _app_objc_cls(_app_NSCursor,pointingHandCursor);
         case APP_CURSOR_DRAG_NS:
-            return _app_objc_cls(NSCursor,resizeUpDownCursor);
+            return _app_objc_cls(_app_NSCursor,resizeUpDownCursor);
         case APP_CURSOR_DRAG_EW:
-            return _app_objc_cls(NSCursor,resizeLeftRightCursor);
+            return _app_objc_cls(_app_NSCursor,resizeLeftRightCursor);
     }
 }
 
@@ -118,8 +118,8 @@ _app_cursor_update(void) {
         if (activeWindow) {
             app_rect const viewport = app_window_get_viewport(activeWindow);
             if (app_cursor_is_inside(viewport, NULL)) {
-                NSCursor* const nsCursor = _app_nscursor_get(_app_cursor);
-                _app_nscursor_push(nsCursor);
+                _app_NSCursor* const cursor = _app_nscursor_get(_app_cursor);
+                _app_nscursor_push(cursor);
                 return;
             }
         }

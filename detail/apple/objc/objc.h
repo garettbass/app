@@ -16,6 +16,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "detail/id.h"
 #include "detail/utility.h"
 
@@ -36,7 +37,7 @@ _app_objc_import(FRAMEWORK, SYMBOLS...) - import symbols from a framework
 
 Usage:
 
-    _app_objc_framework(Foundation)
+    _app_objc_framework(Foundation, "Foundation.framework/Foundation")
     _app_objc_import(
         Foundation,
         function(void,objc_release,(void*)),
@@ -44,7 +45,8 @@ Usage:
     )
 
 */
-#define _app_objc_framework(FRAMEWORK) __app_objc_framework(FRAMEWORK)
+#define _app_objc_framework(FRAMEWORK, PATH)\
+        __app_objc_framework(FRAMEWORK, PATH)
 #include "detail/framework.h"
 
 #define _app_objc_import(FRAMEWORK, /*SYMBOLS*/...) __app_objc_import(FRAMEWORK, __VA_ARGS__)
@@ -52,7 +54,7 @@ Usage:
 
 //------------------------------------------------------------------------------
 
-_app_objc_framework(CoreFoundation)
+_app_objc_framework(CoreFoundation, "CoreFoundation.framework/CoreFoundation")
 _app_objc_import(
     CoreFoundation,
     function(signed long, CFGetRetainCount,(const void*)),
@@ -60,7 +62,7 @@ _app_objc_import(
 
 //------------------------------------------------------------------------------
 
-_app_objc_framework(Foundation)
+_app_objc_framework(Foundation, "Foundation.framework/Foundation")
 _app_objc_import(
     Foundation,
     function(bool,                class_addIvar,(_app_objc_class*, const char* name, size_t size, uint8_t alignment, const char* types)),
@@ -135,7 +137,7 @@ _app_objc_class(NAME) - forward declare an Objective-C class
 */
 #define _app_objc_class(NAME) typedef struct NAME NAME
 
-_app_objc_class(NSObject);
+_app_objc_class(_app_NSObject);
 
 /*------------------------------------------------------------------------------
 _app_objc_interface(CLASS, SYMBOLS...) - declare an Objective-C class interface
@@ -143,13 +145,13 @@ _app_objc_interface(CLASS, SYMBOLS...) - declare an Objective-C class interface
 Usage:
 
     _app_objc_interface(
-        NSDate,
-        cls(NSDate*, date),
-        cls(NSDate*, dateWithTimeIntervalSinceNow,NSTimeInterval),
-        cls(NSDate*, dateWithTimeInterval,NSTimeInterval,sinceDate,NSDate*),
-        cls(NSDate*, distantPast),
-        cls(NSDate*, distantFuture),
-        obj(NSDate*, initWithTimeInterval,NSTimeInterval,sinceDate,NSDate*),
+        _app_NSDate,
+        cls(_app_NSDate*, date),
+        cls(_app_NSDate*, dateWithTimeIntervalSinceNow,_app_NSTimeInterval),
+        cls(_app_NSDate*, dateWithTimeInterval,_app_NSTimeInterval,sinceDate,_app_NSDate*),
+        cls(_app_NSDate*, distantPast),
+        cls(_app_NSDate*, distantFuture),
+        obj(_app_NSDate*, initWithTimeInterval,_app_NSTimeInterval,sinceDate,_app_NSDate*),
     )
 
 */
@@ -159,7 +161,7 @@ Usage:
         __app_objc_interface(CLASS, __VA_ARGS__)
 
 _app_objc_interface(
-    NSObject,
+    _app_NSObject,
 )
 
 /*------------------------------------------------------------------------------
@@ -169,23 +171,23 @@ _app_objc_method(RESULT, CLASS, PARAMS...) - define a class method implementatio
 Usage:
 
     _app_objc_interface(
-        AppDelegate,
+        _app_delegate,
     )
 
     _app_objc_implementation(
-        AppDelegate, NSObject,
-        obj(NSApplicationTerminateReply,
-            applicationShouldTerminate,NSApplication*),
+        _app_delegate, _app_NSObject,
+        obj(_app_NSApplicationTerminateReply,
+            applicationShouldTerminate,_app_NSApplication*),
     )
 
     _app_objc_method(
-        NSApplicationTerminateReply,
-        AppDelegate,
-        applicationShouldTerminate,NSApplication*
+        _app_NSApplicationTerminateReply,
+        _app_delegate,
+        applicationShouldTerminate,_app_NSApplication*
     ) {
         puts(__func__);
         app_quit();
-        return NSApplicationTerminateCancel;
+        return _app_NSApplicationTerminateCancel;
     }
 
 */
@@ -202,7 +204,7 @@ _app_objc_cls(CLASS, PARAMS...) - call an Objective-C class method
 
 Usage:
 
-    NSWindow* const nsWindow = _app_objc_cls(NSWindow,new);
+    _app_NSWindow* const nsWindow = _app_objc_cls(_app_NSWindow,new);
 
 */
 #define _app_objc_cls(CLASS, /*PARAMS*/...)\
@@ -213,7 +215,7 @@ _app_objc_obj(CLASS, PARAMS...) - call an Objective-C object method
 
 Usage:
 
-    _app_objc_obj(nsWindow,NSWindow,setReleasedWhenClosed,false);
+    _app_objc_obj(nsWindow,_app_NSWindow,setReleasedWhenClosed,false);
 
 */
 #define _app_objc_obj(SELF, CLASS, /*PARAMS*/...)\
@@ -239,13 +241,13 @@ _app_objc_var(SELF, CLASS, NAME) - get/set an Objective-C object member variable
 Usage:
 
     _app_objc_implementation(
-        AppMenuItem, NSMenuItem,
+        AppMenuItem, _app_NSMenuItem,
         var(AppMenuCallback,    callback),
-        cls(NSMenuItem*,        menuItemWithTitle,NSString*,
+        cls(_app_NSMenuItem*,        menuItemWithTitle,_app_NSString*,
                                 callback,AppMenuCallback,
-                                keyEquivalent,NSString*),
+                                keyEquivalent,_app_NSString*),
         obj(void,               invokeCallback),
-        obj(bool,               validateMenuItem,NSMenuItem*),
+        obj(bool,               validateMenuItem,_app_NSMenuItem*),
     )
 
     //...
@@ -264,12 +266,12 @@ _app_objc_obj_swizzle(RESULT, CLASS, PARAMS...) - replace object method implemen
 
 Usage:
 
-    _app_objc_cls_swizzle(_app_objc_id, NSObject, alloc) {
+    _app_objc_cls_swizzle(_app_objc_id, _app_NSObject, alloc) {
         printf("%s.%s\n", class_getName(self), (const char*)cmd);
         return imp(self, cmd);
     }
 
-    _app_objc_obj_swizzle(void, NSObject, dealloc) {
+    _app_objc_obj_swizzle(void, _app_NSObject, dealloc) {
         printf("%s.%s\n", class_getName(object_getClass(self)), (const char*)cmd);
         imp(self, cmd);
     }

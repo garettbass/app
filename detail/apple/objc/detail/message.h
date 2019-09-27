@@ -4,13 +4,13 @@
 //------------------------------------------------------------------------------
 
 #if defined(__x86_64__)
-    enum { _OC_MSG_SEND_RESULT_SIZE = (sizeof(void*) * 2)  }; // rax, rdx
+    enum { _APP_OBJC_MSG_SEND_RESULT_SIZE = (sizeof(void*) * 2)  }; // rax, rdx
 #elif defined(__i386__)
-    enum { _OC_MSG_SEND_RESULT_SIZE = (sizeof(void*) * 2)  }; // eax, edx
+    enum { _APP_OBJC_MSG_SEND_RESULT_SIZE = (sizeof(void*) * 2)  }; // eax, edx
 #elif defined(__aarch64__)
-    enum { _OC_MSG_SEND_RESULT_SIZE = (sizeof(void*) * 8)  }; // r0..r8
+    enum { _APP_OBJC_MSG_SEND_RESULT_SIZE = (sizeof(void*) * 8)  }; // r0..r8
 #elif defined(__arm__)
-    enum { _OC_MSG_SEND_RESULT_SIZE = (sizeof(void*) * 1)  }; // r0
+    enum { _APP_OBJC_MSG_SEND_RESULT_SIZE = (sizeof(void*) * 1)  }; // r0
 #else
     #error "unrecognized architecture"
 #endif
@@ -23,7 +23,7 @@
     struct __app_objc_msg_send_for {
         static void* get() {
             return
-                (sizeof(T) <= _OC_MSG_SEND_RESULT_SIZE)
+                (sizeof(T) <= _APP_OBJC_MSG_SEND_RESULT_SIZE)
                 ? (void*)objc_msgSend
                 : (void*)objc_msgSend_stret;
         }
@@ -57,7 +57,7 @@
     struct __app_objc_msg_send_super_for {
         static void* get() {
             return
-                (sizeof(T) <= _OC_MSG_SEND_RESULT_SIZE)
+                (sizeof(T) <= _APP_OBJC_MSG_SEND_RESULT_SIZE)
                 ? (void*)objc_msgSendSuper2
                 : (void*)objc_msgSendSuper2_stret;
         }
@@ -114,7 +114,7 @@
                       default: objc_msgSend_stret)
 
     #define __app_objc_msg_send_f(T) \
-            ((__app_objc_sizeof_result(T) <= _OC_MSG_SEND_RESULT_SIZE) \
+            ((__app_objc_sizeof_result(T) <= _APP_OBJC_MSG_SEND_RESULT_SIZE) \
             ? (void*)__app_objc_msg_send_for_small_result(T) \
             : (void*)__app_objc_msg_send_for_large_result(T))
 
@@ -132,7 +132,7 @@
                       default: objc_msgSendSuper2_stret)
 
     #define __app_objc_msg_send_super_f(T) \
-            ((__app_objc_sizeof_result(T) <= _OC_MSG_SEND_RESULT_SIZE) \
+            ((__app_objc_sizeof_result(T) <= _APP_OBJC_MSG_SEND_RESULT_SIZE) \
             ? (void*)__app_objc_msg_send_super_for_small_result(T) \
             : (void*)__app_objc_msg_send_super_for_large_result(T))
 

@@ -18,7 +18,8 @@ app_dll_acquire(const char* path) {
             extern void* __stdcall LoadLibraryA(const char*);
         #endif
         typedef void* (__stdcall * load_library_t)(const char*);
-        const load_library_t load_library = (load_library_t)LoadLibraryA;
+        load_library_t const
+        load_library = (load_library_t)LoadLibraryA;
         return (app_dll*)load_library(path);
     #else
         enum { RTLD_LAZY = 0x1, RTLD_LOCAL = 0x4 };
@@ -35,7 +36,8 @@ app_dll_release(app_dll* dll) {
             extern int __stdcall FreeLibrary(void*);
         #endif
         typedef int (__stdcall * free_library_t)(void*);
-        const free_library_t free_library = (free_library_t)FreeLibrary;
+        free_library_t const
+        free_library = (free_library_t)FreeLibrary;
         free_library(dll);
     #else
         extern int dlclose(void*);
@@ -54,8 +56,10 @@ app_dll_find_symbol(app_dll* dll, const char* symbol) {
         #endif
         typedef void* (__stdcall * get_proc_address_t)(void*, const char*);
         typedef void* (__stdcall * get_module_handle_t)(const char*);
-        const get_proc_address_t get_proc_address = (get_proc_address_t)GetProcAddress;
-        const get_module_handle_t get_module_handle = (get_module_handle_t)GetModuleHandleA;
+        get_proc_address_t const
+        get_proc_address = (get_proc_address_t)GetProcAddress;
+        get_module_handle_t const
+        get_module_handle = (get_module_handle_t)GetModuleHandleA;
         if (dll == NULL) {
             dll = (app_dll*)get_module_handle(NULL);
         }
