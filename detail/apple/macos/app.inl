@@ -220,15 +220,6 @@ _appMenuDestroy(void) {
 
 //------------------------------------------------------------------------------
 
-app_parameters _app_parameters;
-
-app_parameters
-app_get_parameters(void) {
-    return _app_parameters;
-}
-
-//------------------------------------------------------------------------------
-
 int main(int argc, const char* argv[], const char* envp[]) {
     // UI Persistence causes code-created _app_NSWindows to be invisible!
     _app_objc_id const manager = _app_objc_cls(_app_NSPersistentUIManager,sharedManager);
@@ -247,8 +238,7 @@ int main(int argc, const char* argv[], const char* envp[]) {
     _app_objc_obj(_app_NSApp,_app_NSApplication,finishLaunching);
     app_activate();
 
-    _app_parameters = (app_parameters){ argc, argv, envp };
-    const int result = app_main();
+    const int result = app_main(argc, argv, envp);
 
     _appMenuDestroy();
     _app_autoreleasepool_pop();

@@ -46,15 +46,6 @@ APP_EXTERN_C_BEGIN
 
 //------------------------------------------------------------------------------
 
-app_parameters _app_parameters;
-
-app_parameters
-app_get_parameters(void) {
-    return _app_parameters;
-}
-
-//------------------------------------------------------------------------------
-
 void
 app_activate(void) {
     _app_SetForegroundWindow(_app_GetActiveWindow());
@@ -137,8 +128,7 @@ int __stdcall WinMain(void* hInstance, void* hPrevInstance, char* lpCmdLine, int
     const char*  const envs = _app_GetEnvironmentStringsA();
     const char** const envp = _app_alloc_envp(envs);
 
-    _app_parameters = (app_parameters){ argc, argv, envp };
-    const int result = app_main();
+    const int result = app_main(argc, argv, envp);
 
     free(envp);
     _app_FreeEnvironmentStringsA(envs);
