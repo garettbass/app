@@ -1,4 +1,5 @@
 #pragma once
+#include "detail/platform.h"
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -83,6 +84,19 @@ app_cursor_is_locked(void);
 
 void
 app_cursor_set_locked(bool);
+
+//------------------------------------------------------------------------------
+
+typedef struct app_dll app_dll;
+
+app_dll*
+app_dll_acquire(const char* path);
+
+void
+app_dll_release(app_dll* dll);
+
+void*
+app_dll_find_symbol(app_dll* dll, const char* symbol);
 
 //------------------------------------------------------------------------------
 
