@@ -164,6 +164,8 @@ _app_objc_method(_app_NSMenuItem*,AppMenuItem,
     callback,AppMenuCallback,
     keyEquivalent,_app_NSString*
 ) {
+    (void)self;
+    (void)cmd;
     _app_objc_selector* const action = _app_objc_sel(AppMenuItem,invokeCallback);
     AppMenuItem* const item = _app_objc_autorelease(_app_objc_cls(AppMenuItem,alloc));
     _app_objc_obj((_app_NSMenuItem*)item,_app_NSMenuItem,
@@ -176,11 +178,14 @@ _app_objc_method(_app_NSMenuItem*,AppMenuItem,
 }
 
 _app_objc_method(void,AppMenuItem,invokeCallback) {
+    (void)self;
+    (void)cmd;
     AppMenuCallback const callback = _app_objc_var(self,AppMenuItem,callback);
     if (callback) callback();
 }
 
 _app_objc_method(bool,AppMenuItem,validateMenuItem,_app_NSMenuItem*) {
+    (void)cmd;
     assert((size_t)self == (size_t)validateMenuItem);
     AppMenuCallback const callback = _app_objc_var(self,AppMenuItem,callback);
     return callback;
@@ -209,8 +214,17 @@ _appMenuCreate(void) {
 static inline void
 _appMenuDestroy(void) {
     puts(__func__);
-    _app_objc_id mainMenu = _app_objc_obj(_app_NSApp,_app_NSApplication,mainMenu);
+    // _app_objc_id mainMenu = _app_objc_obj(_app_NSApp,_app_NSApplication,mainMenu);
     _app_objc_obj(_app_NSApp,_app_NSApplication,setMainMenu,NULL);
+}
+
+//------------------------------------------------------------------------------
+
+app_parameters _app_parameters;
+
+app_parameters
+app_get_parameters(void) {
+    return _app_parameters;
 }
 
 //------------------------------------------------------------------------------
@@ -233,8 +247,8 @@ int main(int argc, const char* argv[], const char* envp[]) {
     _app_objc_obj(_app_NSApp,_app_NSApplication,finishLaunching);
     app_activate();
 
-    extern int app_main(int, const char*[], const char*[]);
-    const int result = app_main(argc, argv, envp);
+    _app_parameters = (app_parameters){ argc, argv, envp };
+    const int result = app_main();
 
     _appMenuDestroy();
     _app_autoreleasepool_pop();

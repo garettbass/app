@@ -17,13 +17,10 @@ APP_EXTERN_C_BEGIN
 //     imp(self, cmd);
 // }
 
-_app_objc_obj_swizzle(void,_app_NSWindow,dealloc) {
-    (void)imp;
-    (void)self;
-    (void)cmd;
-    printf("_app_NSWindow.%s\n",(const char*)cmd);
-    imp(self, cmd);
-}
+// _app_objc_obj_swizzle(void,_app_NSWindow,dealloc) {
+//     printf("_app_NSWindow.%s\n",(const char*)cmd);
+//     imp(self, cmd);
+// }
 
 _app_objc_obj_swizzle(void,_app_NSWindow,keyDown,_app_NSEvent*) {
     // NSWindow.keyDown will produce an error sound

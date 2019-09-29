@@ -56,6 +56,7 @@ typedef void* (*__app_objc_msg_swizzle_imp)(
         static inline RESULT PREFIX##_callback(MSG_SEND_T imp, __app_objc_unpack(PARAMS));\
         static MSG_SEND_T PREFIX##_imp = NULL;\
         static void* PREFIX##_swizzle_imp PARAMS {\
+            (void)cmd;\
             return ((__app_objc_msg_swizzle_imp)PREFIX##_callback)((_app_objc_imp)PREFIX##_imp, self, __VA_ARGS__);\
         }\
         __attribute__((constructor))\
